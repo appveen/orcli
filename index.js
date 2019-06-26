@@ -1,3 +1,4 @@
+const os = require('os');
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
@@ -27,12 +28,26 @@ if (!process.env.M2_HOME) {
  */
 const repoList = JSON.parse(fs.readFileSync('repo-list.json', 'utf8'));
 
+const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
+
 console.log(chalk.cyan('***********************************'));
 console.log(chalk.green('Welcome to ODP Release CLI'));
 console.log(chalk.cyan('***********************************'));
 console.log('');
 inquirer
     .prompt([
+        {
+            type: 'input',
+            name: 'workspace',
+            message: 'Please enter workspace location',
+            default: path.join(os.homedir(), 'orcli/workspace'),
+            when: function (response) {
+                if (config.workspace && config.workspace.trim()) {
+                    return false;
+                }
+                return true;
+            }
+        },
         {
             type: 'list',
             name: 'releaseType',
@@ -42,7 +57,8 @@ inquirer
                 'Patch Relase',
                 'Hotfix'
             ]
-        }, {
+        },
+        {
             when: function (response) {
                 return response.releaseType === 'New Release';
             },
@@ -56,7 +72,8 @@ inquirer
             type: 'input',
             name: 'branch',
             message: 'Please enter branch'
-        }, {
+        },
+        {
             when: function (response) {
                 return response.releaseType === 'Hotfix';
             },
@@ -64,14 +81,16 @@ inquirer
             name: 'repo',
             message: 'Please select a repo for hotfix',
             choices: repoList
-        }, {
+        },
+        {
             when: function (response) {
                 return response.releaseType === 'Hotfix';
             },
             type: 'input',
             name: 'hotfix',
             message: 'Please enter hotfix number'
-        }, {
+        },
+        {
             when: function (response) {
                 return response.releaseType === 'Patch Relase';
             },
@@ -82,7 +101,7 @@ inquirer
     ])
     .then(answers => {
         console.log(answers);
-        const workspace = path.join(process.cwd(), '../workspace');
+        const workspace = path.join(__dirname, path.relative(__dirname, answers.workspace));
         if (!fs.existsSync(workspace)) {
             fs.mkdirSync(workspace);
         }
