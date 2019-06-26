@@ -6,6 +6,9 @@ const shell = require('shelljs');
 const makeDir = require('make-dir');
 const inquirer = require('inquirer');
 
+const release = require('./release');
+const hotfix = require('./hotfix');
+
 if (!process.env.JAVA_HOME) {
     console.log(chalk.cyan('***********************************'));
     console.log(chalk.red('JAVA_HOME not found, please set JAVA_HOME'));
@@ -105,70 +108,24 @@ inquirer
     ])
     .then(answers => {
         console.log(answers);
-        const workspace = path.join(__dirname, path.relative(__dirname, answers.workspace));
-        // if (!fs.existsSync(workspace)) {
-            
-        // }
-        makeDir.sync(workspace);
-        shell.cd(workspace);
-        shell.rm('-rf', 'ODP_RELEASE');
-        shell.rm('-rf', 'BRANCH');
-        let ODP_RELEASE;
+        answers.workspace = path.join(__dirname, path.relative(__dirname, answers.workspace));
+        makeDir.sync(answers.workspace);
+        shell.cd(answers.workspace);
         if (answers.releaseType == 'New Release') {
-            ODP_RELEASE = answers.release;
-            shell.exec(`echo ${answers.release} > ODP_RELEASE`);
-            shell.exec(`echo dev > BRANCH`);
+            console.log(chalk.cyan('***********************************'));
+            console.log(chalk.green(`RELEASE STARTED :: ${answers.release}`));
+            console.log(chalk.cyan('***********************************'));
+            release.trigger(answers);
+            console.log(chalk.cyan('***********************************'));
+            console.log(chalk.green(`RELEASE ENDED :: ${answers.release}`));
+            console.log(chalk.cyan('***********************************'));
         } else {
-            ODP_RELEASE = answers.patch;
-            shell.exec(`echo ${answers.patch} > ODP_RELEASE`);
-            shell.exec(`echo ${answers.branch} > BRANCH`);
-        }
-        shell.pwd()
-        for (let repo of repoList) {
-            shell.cd(workspace);
             console.log(chalk.cyan('***********************************'));
-            console.log(chalk.green(`PROCESS STARTED FOR :: ${repo.name}`));
+            console.log(chalk.green(`HOTFIX STARTED :: ${answers.repo} ${answers.branch} hotfix ${answers.hotfix}`));
             console.log(chalk.cyan('***********************************'));
-            if(repo.short){
-                shell.touch(`CLEAN_BUILD_${repo.short}`)
-            }
-            if (fs.existsSync(repo.name)) {
-                shell.cd(repo.name);
-                shell.env['WORKSPACE'] = shell.pwd();
-                shell.exec(`git reset --hard`);
-                if (answers.releaseType !== 'New Release') {
-                    shell.exec(`git checkout ${answers.branch}`);
-                } else {
-                    shell.exec(`git checkout dev`);
-                }
-                shell.exec(`git pull ${repo.url}`);
-            } else {
-                shell.exec(`git clone ${repo.url}`);
-                shell.cd(repo.name);
-                if (answers.releaseType !== 'New Release') {
-                    shell.exec(`git checkout ${answers.branch}`);
-                } else {
-                    shell.exec(`git checkout dev`);
-                }
-            }
-            if (repo.node) {
-                shell.exec(`npm i`);
-            }
-            if (fs.existsSync('scripts/build_image.sh')) {
-                shell.exec(`sh scripts/build_image.sh ${ODP_RELEASE}`);
-            } else {
-                if (fs.existsSync('scripts/build_jar.sh')) {
-                    shell.exec(`sh scripts/build_jar.sh`);
-                }
-                if (fs.existsSync('scripts/setup.sh')) {
-                    shell.exec(`sh scripts/setup.sh`);
-                }
-                if (fs.existsSync('scripts/build_executables.sh')) {
-                    shell.exec(`sh scripts/build_executables.sh`);
-                }
-            }
+            hotfix.trigger(answers);
             console.log(chalk.cyan('***********************************'));
-            console.log(chalk.green(`PROCESS ENDED FOR :: ${repo.name}`));
+            console.log(chalk.green(`HOTFIX ENDED :: ${answers.repo} ${answers.branch} hotfix ${answers.hotfix}`));
             console.log(chalk.cyan('***********************************'));
         }
     });
