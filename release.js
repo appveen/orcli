@@ -7,7 +7,7 @@ const shell = require('shelljs');
 /**
  * @type {[{name:string,url:string,node:boolean,short:string}]}
  */
-const repoList = JSON.parse(fs.readFileSync('repo-list.json', 'utf8'));
+const repoList = JSON.parse(fs.readFileSync(path.join(__dirname, 'repo-list.json'), 'utf8'));
 
 function trigger(answers) {
     shell.rm('-rf', 'ODP_RELEASE');

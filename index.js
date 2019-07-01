@@ -33,9 +33,9 @@ if (!process.env.M2_HOME) {
 /**
  * @type {[{name:string,url:string,node:boolean,short:string}]}
  */
-const repoList = JSON.parse(fs.readFileSync('repo-list.json', 'utf8'));
+const repoList = JSON.parse(fs.readFileSync(path.join(__dirname, 'repo-list.json'), 'utf8'));
 
-const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
+const config = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8'));
 
 console.log(chalk.cyan('***********************************'));
 console.log(chalk.green('Welcome to ODP Release CLI'));
