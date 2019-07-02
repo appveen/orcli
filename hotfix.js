@@ -13,7 +13,7 @@ const repoList = JSON.parse(fs.readFileSync(path.join(__dirname, 'repo-list.json
 function trigger(answers) {
     shell.rm('-rf', 'ODP_RELEASE');
     shell.rm('-rf', 'BRANCH');
-    const ODP_RELEASE = answers.patch;
+    const ODP_RELEASE = answers.patch || answers.branch;
     shell.exec(`echo ${ODP_RELEASE} > ODP_RELEASE`);
     shell.exec(`echo ${answers.branch} > BRANCH`);
     shell.pwd()
