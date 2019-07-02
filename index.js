@@ -5,6 +5,7 @@ const chalk = require('chalk');
 const shell = require('shelljs');
 const makeDir = require('make-dir');
 const inquirer = require('inquirer');
+const dateformat = require('dateformat');
 
 const release = require('./release');
 const hotfix = require('./hotfix');
@@ -114,6 +115,14 @@ inquirer
         } else {
             answers.workspace = path.join(answers.workspace, answers.branch);
         }
+        const date = new Date();
+        answers.saveLocation = path.join(answers.workspace, 'images',dateformat(date,'yyyy_mm_dd'));
+        console.log(chalk.cyan('***********************************'));
+        console.log(chalk.cyan('***********************************'));
+        console.log(chalk.green(`IMAGES AT :: ${answers.saveLocation}`));
+        console.log(chalk.cyan('***********************************'));
+        console.log(chalk.cyan('***********************************'));
+        makeDir.sync(answers.saveLocation);
         makeDir.sync(answers.workspace);
         shell.cd(answers.workspace);
         if (answers.releaseType == 'New Release') {
