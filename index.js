@@ -109,6 +109,11 @@ inquirer
     .then(answers => {
         console.log(answers);
         answers.workspace = path.join(__dirname, path.relative(__dirname, answers.workspace));
+        if (answers.releaseType == 'New Release') {
+            answers.workspace = path.join(answers.workspace, answers.release);
+        } else {
+            answers.workspace = path.join(answers.workspace, answers.branch);
+        }
         makeDir.sync(answers.workspace);
         shell.cd(answers.workspace);
         if (answers.releaseType == 'New Release') {
