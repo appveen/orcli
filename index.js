@@ -32,7 +32,7 @@ if (!process.env.M2_HOME) {
 }
 
 /**
- * @type {[{name:string,url:string,node:boolean,short:string}]}
+ * @type {[{name:string,url:string,node:boolean,short:string,dependency:string[]}]}
  */
 const repoList = JSON.parse(fs.readFileSync(path.join(__dirname, 'repo-list.json'), 'utf8'));
 
@@ -108,7 +108,6 @@ inquirer
         }
     ])
     .then(answers => {
-        console.log(answers);
         answers.workspace = path.join(__dirname, path.relative(__dirname, answers.workspace));
         if (answers.releaseType == 'New Release') {
             answers.workspace = path.join(answers.workspace, answers.release);
@@ -116,7 +115,7 @@ inquirer
             answers.workspace = path.join(answers.workspace, answers.branch);
         }
         const date = new Date();
-        answers.saveLocation = path.join(answers.workspace, 'images',dateformat(date,'yyyy_mm_dd'));
+        answers.saveLocation = path.join(answers.workspace, 'images', dateformat(date, 'yyyy_mm_dd'));
         console.log(chalk.cyan('***********************************'));
         console.log(chalk.cyan('***********************************'));
         console.log(chalk.green(`IMAGES AT :: ${answers.saveLocation}`));

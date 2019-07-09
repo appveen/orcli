@@ -1,12 +1,10 @@
-const os = require('os');
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
 const shell = require('shelljs');
-const makeDir = require('make-dir');
 
 /**
- * @type {[{name:string,url:string,node:boolean,short:string}]}
+ * @type {[{name:string,url:string,node:boolean,short:string,dependency:string[]}]}
  */
 const repoList = JSON.parse(fs.readFileSync(path.join(__dirname, 'repo-list.json'), 'utf8'));
 
@@ -19,9 +17,30 @@ function trigger(answers) {
     shell.pwd()
     const repo = repoList.find(e => e.name === answers.repo);
     shell.cd(answers.workspace);
+    if (repo.dependency && repo.dependency.length > 0) {
+        for (let i = 0; i < repo.dependency.length; i++) {
+            const dep = repo.dependency[i];
+            console.log(chalk.cyan('***********************************'));
+            console.log(chalk.green(`BUILD STARTED FOR DEPENDENCY :: ${dep}`));
+            console.log(chalk.cyan('***********************************'));
+            const tempRepo = repoList.find(e => e.name === dep);
+            buildImage(tempRepo, answers);
+            console.log(chalk.cyan('***********************************'));
+            console.log(chalk.green(`BUILD ENDED FOR DEPENDENCY :: ${dep}`));
+            console.log(chalk.cyan('***********************************'));
+        }
+    }
     console.log(chalk.cyan('***********************************'));
     console.log(chalk.green(`PROCESS STARTED FOR :: ${repo.name}`));
     console.log(chalk.cyan('***********************************'));
+    buildImage(repo, answers);
+    console.log(chalk.cyan('***********************************'));
+    console.log(chalk.green(`PROCESS ENDED FOR :: ${repo.name}`));
+    console.log(chalk.cyan('***********************************'));
+}
+
+function buildImage(repo, answers) {
+    const ODP_RELEASE = answers.patch || answers.branch;
     if (repo.short) {
         shell.touch(`CLEAN_BUILD_${repo.short}`)
     }
@@ -57,9 +76,6 @@ function trigger(answers) {
             shell.exec(`sh scripts/build_executables.sh`);
         }
     }
-    console.log(chalk.cyan('***********************************'));
-    console.log(chalk.green(`PROCESS ENDED FOR :: ${repo.name}`));
-    console.log(chalk.cyan('***********************************'));
 }
 
 module.exports.trigger = trigger;

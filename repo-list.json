@@ -17,7 +17,11 @@
     {
         "name": "odp-b2b-agent",
         "url": "git@bitbucket.org:appveen/odp-b2b-agent.git",
-        "short":"B2BGW"
+        "short":"B2BGW",
+        "dependency":[
+            "odp-b2b-agent-watcher",
+            "govault"
+        ]
     },
     {
         "name": "odp-b2b-backend-generator",
@@ -28,7 +32,10 @@
         "name": "odp-b2b-partner-manager",
         "url": "git@bitbucket.org:appveen/odp-b2b-partner-manager.git",
         "node": true,
-        "short":"PM"
+        "short":"PM",
+        "dependency":[
+            "odp-b2b-agent"
+        ]
     },
     {
         "name": "odp-deployment-manager",
@@ -97,6 +104,11 @@
     {
         "name": "odp-proxy",
         "url": "git@bitbucket.org:appveen/odp-proxy.git",
-        "short":"PROXY"
+        "short":"PROXY",
+        "dependency":[
+            "odp-ui-author",
+            "odp-ui-appcenter",
+            "odp-ui-swagger"
+        ]
     }
 ]

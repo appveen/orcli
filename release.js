@@ -1,11 +1,10 @@
-const os = require('os');
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
 const shell = require('shelljs');
 
 /**
- * @type {[{name:string,url:string,node:boolean,short:string}]}
+ * @type {[{name:string,url:string,node:boolean,short:string,dependency:string[]}]}
  */
 const repoList = JSON.parse(fs.readFileSync(path.join(__dirname, 'repo-list.json'), 'utf8'));
 
