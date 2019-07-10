@@ -60,6 +60,13 @@ function buildImage(repo, answers) {
     if (repo.node) {
         shell.exec(`npm i`);
     }
+    if (repo.short) {
+        const yamlFile = `${repo.short.toLowerCase()}.${ODP_RELEASE}-hotfix-${answers.hotfix}.yaml`;
+        const yamlPath = path.join(answers.saveLocation, 'yamls', yamlFile);
+        shell.cp(`${repo.short.toLowerCase()}.yaml`, yamlPath);
+        shelljs.sed('-i', '__release_tag__', `'${ODP_RELEASE}'`, yamlPath);
+        shelljs.sed('-i', '__release__', `${ODP_RELEASE}-hotfix-${answers.hotfix}`, yamlPath);
+    }
     if (fs.existsSync('scripts/build_image.sh')) {
         shell.exec(`sh scripts/build_image.sh ${ODP_RELEASE} hotfix-${answers.hotfix}`);
         shell.cd(answers.saveLocation);
