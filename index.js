@@ -62,7 +62,7 @@ inquirer
             message: 'Please select release type',
             choices: [
                 'New Release',
-                'Patch Relase',
+                // 'Patch Relase',
                 'Hotfix'
             ]
         },
@@ -105,7 +105,27 @@ inquirer
             type: 'input',
             name: 'patch',
             message: 'Please enter patch version'
-        }
+        },
+        // {
+        //     type: 'confirm',
+        //     name: 'push',
+        //     message: 'Do you want to push this image to e-delivery?'
+        // },
+        // {
+        //     when: function (response) {
+        //         return response.push;
+        //     },
+        //     type: 'input',
+        //     name: 'deliveryLocation',
+        //     message: 'Please enter e-delivery location',
+        //     default: function (response) {
+        //         if(response.releaseType === 'Hotfix'){
+        //             return `/home/ubuntu/e-delivery/Releases/ODP/${response.branch}/Hotfix`
+        //         } else {
+        //             return `/home/ubuntu/e-delivery/Releases/ODP/${response.release}/Images`
+        //         }
+        //     }
+        // }
     ])
     .then(answers => {
         answers.workspace = path.join(__dirname, path.relative(__dirname, answers.workspace));
@@ -116,11 +136,6 @@ inquirer
         }
         const date = new Date();
         answers.saveLocation = path.join(answers.workspace, 'images', dateformat(date, 'yyyy_mm_dd'));
-        console.log(chalk.cyan('***********************************'));
-        console.log(chalk.cyan('***********************************'));
-        console.log(chalk.green(`IMAGES AT :: ${answers.saveLocation}`));
-        console.log(chalk.cyan('***********************************'));
-        console.log(chalk.cyan('***********************************'));
         makeDir.sync(answers.saveLocation);
         makeDir.sync(path.join(answers.saveLocation,'yamls'));
         makeDir.sync(answers.workspace);
@@ -142,4 +157,9 @@ inquirer
             console.log(chalk.green(`HOTFIX ENDED :: ${answers.repo} ${answers.branch} hotfix ${answers.hotfix}`));
             console.log(chalk.cyan('***********************************'));
         }
+        console.log(chalk.cyan('***********************************'));
+        console.log(chalk.cyan('***********************************'));
+        console.log(chalk.green(`IMAGES AT :: ${answers.saveLocation}`));
+        console.log(chalk.cyan('***********************************'));
+        console.log(chalk.cyan('***********************************'));
     });
