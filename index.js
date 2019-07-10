@@ -122,7 +122,7 @@ inquirer
         console.log(chalk.cyan('***********************************'));
         console.log(chalk.cyan('***********************************'));
         makeDir.sync(answers.saveLocation);
-        makeDir.sync(path.join(answers.saveLocation),'yamls');
+        makeDir.sync(path.join(answers.saveLocation,'yamls'));
         makeDir.sync(answers.workspace);
         shell.cd(answers.workspace);
         if (answers.releaseType == 'New Release') {
