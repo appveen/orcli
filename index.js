@@ -136,9 +136,9 @@ inquirer
         }
         const date = new Date();
         answers.saveLocation = path.join(answers.workspace, 'images', dateformat(date, 'yyyy_mm_dd'));
+        makeDir.sync(answers.workspace);
         makeDir.sync(answers.saveLocation);
         makeDir.sync(path.join(answers.saveLocation,'yamls'));
-        makeDir.sync(answers.workspace);
         shell.cd(answers.workspace);
         if (answers.releaseType == 'New Release') {
             console.log(chalk.cyan('***********************************'));
