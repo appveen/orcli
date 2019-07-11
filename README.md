@@ -30,7 +30,7 @@ sudo apt-get install -y nodejs
 
 ### Install Angular 6
 ```sh
-sudo npm i -g @angular/cli
+sudo npm i -g @angular/cli@6
 ```
 
 ### Install osslsigncode
