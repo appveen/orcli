@@ -104,7 +104,7 @@
     {
         "name": "odp-proxy",
         "url": "git@bitbucket.org:appveen/odp-proxy.git",
-        "short":"PROXY",
+        "short":"NGINX",
         "dependency":[
             "odp-ui-author",
             "odp-ui-appcenter",
