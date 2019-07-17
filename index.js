@@ -4,6 +4,7 @@ const path = require('path');
 const chalk = require('chalk');
 const shell = require('shelljs');
 const makeDir = require('make-dir');
+const jsonfile = require('jsonfile');
 const inquirer = require('inquirer');
 const dateformat = require('dateformat');
 
@@ -31,12 +32,20 @@ if (!process.env.M2_HOME) {
     process.exit();
 }
 
+const repoFileLocation = path.join(__dirname, 'repo-list.json');
+const configFileLocation = path.join(__dirname, 'config.json');
+
+if (!fs.existsSync(configFileLocation)) {
+    fs.writeFileSync(configFileLocation, '{"repoAccess":{ "username":"", "password":""},"workspace":""}', 'utf8');
+}
+
 /**
  * @type {[{name:string,url:string,node:boolean,short:string,dependency:string[]}]}
  */
-const repoList = JSON.parse(fs.readFileSync(path.join(__dirname, 'repo-list.json'), 'utf8'));
+const repoList = jsonfile.readFileSync(repoFileLocation);
+const config = jsonfile.readFileSync(configFileLocation);
+const defaultWorkspace = config.workspace || path.join(os.homedir(), 'orcli_workspace');
 
-const config = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8'));
 
 console.log(chalk.cyan('***********************************'));
 console.log(chalk.green('Welcome to ODP Release CLI'));
@@ -48,13 +57,7 @@ inquirer
             type: 'input',
             name: 'workspace',
             message: 'Please enter workspace location',
-            default: path.join(os.homedir(), 'orcli_workspace'),
-            when: function (response) {
-                if (config.workspace && config.workspace.trim()) {
-                    return false;
-                }
-                return true;
-            }
+            default: defaultWorkspace
         },
         {
             type: 'list',
@@ -128,6 +131,8 @@ inquirer
         // }
     ])
     .then(answers => {
+        config.workspace = answers.workspace;
+        jsonfile.writeFileSync(configFileLocation, config);
         answers.workspace = path.join(__dirname, path.relative(__dirname, answers.workspace));
         if (answers.releaseType == 'New Release') {
             answers.workspace = path.join(answers.workspace, answers.release);
@@ -138,7 +143,7 @@ inquirer
         answers.saveLocation = path.join(answers.workspace, 'images', dateformat(date, 'yyyy_mm_dd'));
         makeDir.sync(answers.workspace);
         makeDir.sync(answers.saveLocation);
-        makeDir.sync(path.join(answers.saveLocation,'yamls'));
+        makeDir.sync(path.join(answers.saveLocation, 'yamls'));
         shell.cd(answers.workspace);
         if (answers.releaseType == 'New Release') {
             console.log(chalk.cyan('***********************************'));

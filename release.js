@@ -2,11 +2,12 @@ const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
 const shell = require('shelljs');
+const jsonfile = require('jsonfile');
 
 /**
  * @type {[{name:string,url:string,node:boolean,short:string,dependency:string[]}]}
  */
-const repoList = JSON.parse(fs.readFileSync(path.join(__dirname, 'repo-list.json'), 'utf8'));
+const repoList = jsonfile.readFileSync(path.join(__dirname, 'repo-list.json'));
 
 function trigger(answers) {
     shell.rm('-rf', 'ODP_RELEASE');
