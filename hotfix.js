@@ -65,12 +65,13 @@ function buildImage(repo, answers) {
         if (lastPull) {
             shell.exec(`git log --pretty=oneline --since="${lastPull}"`);
         }
-        shell.exec(`echo ${new Date().toISOString()} > LAST_PULL_${repo.name.toUpperCase()}`);
+        shell.exec(`echo ${new Date().toISOString()} > ../LAST_PULL_${repo.name.toUpperCase()}`);
     } else {
         shell.exec(`git clone ${repo.url}`);
         shell.cd(repo.name);
         shell.env['WORKSPACE'] = shell.pwd();
         shell.exec(`git checkout ${answers.branch}`);
+        shell.exec(`echo ${new Date().toISOString()} > ../LAST_PULL_${repo.name.toUpperCase()}`);
     }
     if (repo.node) {
         shell.exec(`npm i`);
