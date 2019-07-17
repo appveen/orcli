@@ -41,18 +41,31 @@ function trigger(answers) {
     console.log(chalk.cyan('***********************************'));
 }
 
+/**
+ * 
+ * @param {{name:string,url:string,node:boolean,short:string,dependency:string[]}} repo 
+ * @param {*} answers 
+ */
 function buildImage(repo, answers) {
     const ODP_RELEASE = answers.patch || answers.branch;
     if (repo.short) {
         shell.touch(`CLEAN_BUILD_${repo.short}`)
     }
     if (fs.existsSync(repo.name)) {
+        let lastPull;
+        if (fs.existsSync(`LAST_PULL_${repo.name.toUpperCase()}`)) {
+            lastPull = shell.cat(`LAST_PULL_${repo.name.toUpperCase()}`);
+        }
         shell.cd(repo.name);
         shell.env['WORKSPACE'] = shell.pwd();
         shell.exec(`git reset --hard`);
         shell.exec(`git stash`);
         shell.exec(`git checkout ${answers.branch}`);
         shell.exec(`git pull ${repo.url}`);
+        if (lastPull) {
+            shell.exec(`git log --pretty=oneline --since="${lastPull}"`);
+        }
+        shell.exec(`echo ${new Date().toISOString()} > LAST_PULL_${repo.name.toUpperCase()}`);
     } else {
         shell.exec(`git clone ${repo.url}`);
         shell.cd(repo.name);
