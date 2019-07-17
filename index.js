@@ -48,7 +48,7 @@ inquirer
             type: 'input',
             name: 'workspace',
             message: 'Please enter workspace location',
-            default: path.join(os.homedir(), 'orcli/workspace'),
+            default: path.join(os.homedir(), 'orcli_workspace'),
             when: function (response) {
                 if (config.workspace && config.workspace.trim()) {
                     return false;
