@@ -46,8 +46,12 @@ function trigger(answers) {
         if (fs.existsSync('scripts/build_image.sh')) {
             shell.exec(`sh scripts/build_image.sh ${ODP_RELEASE}`);
             shell.cd(answers.saveLocation);
-            shell.exec(`docker save -o odp_${repo.short.toLowerCase()}.${ODP_RELEASE}.tar odp:${repo.short.toLowerCase()}.${ODP_RELEASE}`)
-            .exec(`bzip2 odp_${repo.short.toLowerCase()}.${ODP_RELEASE}.tar`);
+            const imageName = `odp:${repo.short.toLowerCase()}.${ODP_RELEASE}`;
+            const tarName = `odp_${repo.short.toLowerCase()}.${ODP_RELEASE}.tar`;
+            shell.rm('-rf', `${tarName}`);
+            shell.rm('-rf', `${tarName}.bz2`);
+            shell.exec(`docker save -o ${tarName} ${imageName}`)
+                .exec(`bzip2 odp_${repo.short.toLowerCase()}.${ODP_RELEASE}.tar`);
         } else {
             if (fs.existsSync('scripts/build_jar.sh')) {
                 shell.exec(`sh scripts/build_jar.sh`);

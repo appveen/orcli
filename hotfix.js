@@ -64,6 +64,7 @@ function buildImage(repo, answers) {
     if (repo.short) {
         const yamlFile = `${repo.short.toLowerCase()}.${ODP_RELEASE}-hotfix-${answers.hotfix}.yaml`;
         const yamlPath = path.join(answers.saveLocation, 'yamls', yamlFile);
+        shell.rm('-rf', `${yamlPath}`);
         shell.cp(`${repo.short.toLowerCase()}.yaml`, yamlPath);
         shell.sed('-i', '__release_tag__', `'${ODP_RELEASE}'`, yamlPath);
         shell.sed('-i', '__release__', `${ODP_RELEASE}-hotfix-${answers.hotfix}`, yamlPath);
@@ -71,8 +72,12 @@ function buildImage(repo, answers) {
     if (fs.existsSync('scripts/build_image.sh')) {
         shell.exec(`sh scripts/build_image.sh ${ODP_RELEASE} hotfix-${answers.hotfix}`);
         shell.cd(answers.saveLocation);
-        shell.exec(`docker save -o odp_${repo.short.toLowerCase()}.${ODP_RELEASE}-hotfix-${answers.hotfix}.tar odp:${repo.short.toLowerCase()}.${ODP_RELEASE}-hotfix-${answers.hotfix}`)
-            .exec(`bzip2 odp_${repo.short.toLowerCase()}.${ODP_RELEASE}-hotfix-${answers.hotfix}.tar`);
+        const imageName = `odp:${repo.short.toLowerCase()}.${ODP_RELEASE}-hotfix-${answers.hotfix}`;
+        const tarName = `odp_${repo.short.toLowerCase()}.${ODP_RELEASE}-hotfix-${answers.hotfix}.tar`;
+        shell.rm('-rf', `${tarName}`);
+        shell.rm('-rf', `${tarName}.bz2`);
+        shell.exec(`docker save -o ${tarName} ${imageName}`)
+            .exec(`bzip2 ${tarName}`);
     } else {
         if (fs.existsSync('scripts/build_jar.sh')) {
             shell.exec(`sh scripts/build_jar.sh`);
