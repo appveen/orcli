@@ -34,7 +34,7 @@ function trigger(answers) {
             } else {
                 shell.exec(`git checkout dev`);
             }
-            shell.exec(`git pull ${repo.url}`);
+            shell.exec(`git pull`);
         } else {
             shell.exec(`git clone ${repo.url}`);
             shell.cd(repo.name);

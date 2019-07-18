@@ -58,10 +58,8 @@ function buildImage(repo, answers) {
         }
         shell.cd(repo.name);
         shell.env['WORKSPACE'] = shell.pwd();
-        shell.exec(`git reset --hard`);
         shell.exec(`git stash`);
-        shell.exec(`git checkout ${answers.branch}`);
-        shell.exec(`git pull ${repo.url}`);
+        shell.exec(`git pull`);
         if (lastPull) {
             shell.exec(`git log --pretty=oneline --since="${lastPull}"`);
         }
