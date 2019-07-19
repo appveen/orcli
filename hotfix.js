@@ -61,7 +61,13 @@ function buildImage(repo, answers) {
         shell.exec(`git stash`);
         shell.exec(`git pull`);
         if (lastPull) {
+            console.log(chalk.cyan(''));
+            console.log(chalk.cyan('***********************************'));
+            console.log(chalk.green(`Changes found`));
+            console.log(chalk.cyan('***********************************'));
             shell.exec(`git log --pretty=oneline --since="${lastPull}"`);
+            console.log(chalk.cyan('***********************************'));
+            console.log(chalk.cyan(''));
         }
         shell.exec(`echo ${new Date().toISOString()} > ../LAST_PULL_${repo.name.toUpperCase()}`);
     } else {
