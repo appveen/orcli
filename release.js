@@ -73,7 +73,7 @@ function trigger(answers) {
             }
             if (repo.short === 'B2B') {
                 shell.exec(`docker save -o odp_b2b.runner.${ODP_RELEASE}.tar odp:b2b.runner.${ODP_RELEASE}`)
-                    .exec(`bzip2 odp_b2b.runner.${ODP_RELEASE}}.tar`);
+                    .exec(`bzip2 odp_b2b.runner.${ODP_RELEASE}.tar`);
             }
         } else {
             if (fs.existsSync('scripts/build_jar.sh')) {
