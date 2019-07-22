@@ -21,25 +21,35 @@ function trigger(answers) {
         console.log(chalk.cyan('***********************************'));
         console.log(chalk.green(`PROCESS STARTED FOR :: ${repo.name}`));
         console.log(chalk.cyan('***********************************'));
-        if (repo.short) {
+        if (repo.short && repo.short !== 'B2B') {
             shell.touch(`CLEAN_BUILD_${repo.short}`)
         }
         if (fs.existsSync(repo.name)) {
+            let lastPull;
+            if (fs.existsSync(`LAST_PULL_${repo.name.toUpperCase()}`)) {
+                lastPull = shell.cat(`LAST_PULL_${repo.name.toUpperCase()}`);
+            }
             shell.cd(repo.name);
             shell.env['WORKSPACE'] = shell.pwd();
-            shell.exec(`git reset --hard`);
             shell.exec(`git stash`);
-            if (answers.releaseType !== 'New Release') {
-                shell.exec(`git checkout ${answers.branch}`);
-            } else {
-                shell.exec(`git checkout dev`);
-            }
+            shell.exec(`git checkout dev`);
             shell.exec(`git pull`);
+            if (lastPull) {
+                console.log(chalk.cyan(''));
+                console.log(chalk.cyan('***********************************'));
+                console.log(chalk.green(`Changes found`));
+                console.log(chalk.cyan('***********************************'));
+                shell.exec(`git log --pretty=oneline --since="${lastPull}"`);
+                console.log(chalk.cyan('***********************************'));
+                console.log(chalk.cyan(''));
+            }
+            shell.exec(`echo ${new Date().toISOString()} > ../LAST_PULL_${repo.name.toUpperCase()}`);
         } else {
             shell.exec(`git clone ${repo.url}`);
             shell.cd(repo.name);
             shell.env['WORKSPACE'] = shell.pwd();
             shell.exec(`git checkout dev`);
+            shell.exec(`echo ${new Date().toISOString()} > ../LAST_PULL_${repo.name.toUpperCase()}`);
         }
         if (repo.node) {
             shell.exec(`npm i`);
@@ -49,8 +59,12 @@ function trigger(answers) {
             shell.cd(answers.saveLocation);
             const imageName = `odp:${repo.short.toLowerCase()}.${ODP_RELEASE}`;
             const tarName = `odp_${repo.short.toLowerCase()}.${ODP_RELEASE}.tar`;
-            shell.rm('-rf', `${tarName}`);
-            shell.rm('-rf', `${tarName}.bz2`);
+            if (fs.existsSync(`${tarName}`)) {
+                shell.rm('-rf', `${tarName}`);
+            }
+            if (fs.existsSync(`${tarName}.bz2`)) {
+                shell.rm('-rf', `${tarName}.bz2`);
+            }
             shell.exec(`docker save -o ${tarName} ${imageName}`)
                 .exec(`bzip2 odp_${repo.short.toLowerCase()}.${ODP_RELEASE}.tar`);
         } else {
