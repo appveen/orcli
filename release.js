@@ -67,6 +67,14 @@ function trigger(answers) {
             }
             shell.exec(`docker save -o ${tarName} ${imageName}`)
                 .exec(`bzip2 odp_${repo.short.toLowerCase()}.${ODP_RELEASE}.tar`);
+            if (repo.short === 'SM') {
+                shell.exec(`docker save -o odp_base.${ODP_RELEASE}.tar odp:base.${ODP_RELEASE}`)
+                    .exec(`bzip2 odp_base.${ODP_RELEASE}.tar`);
+            }
+            if (repo.short === 'B2B') {
+                shell.exec(`docker save -o odp_b2b.runner.${ODP_RELEASE}.tar odp:b2b.runner.${ODP_RELEASE}`)
+                    .exec(`bzip2 odp_b2b.runner.${ODP_RELEASE}}.tar`);
+            }
         } else {
             if (fs.existsSync('scripts/build_jar.sh')) {
                 shell.exec(`sh scripts/build_jar.sh`);
