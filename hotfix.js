@@ -59,6 +59,7 @@ function buildImage(repo, answers) {
         shell.cd(repo.name);
         shell.env['WORKSPACE'] = shell.pwd();
         shell.exec(`git stash`);
+        shell.exec(`git checkout ${answers.branch}`);
         shell.exec(`git pull`);
         if (lastPull) {
             console.log(chalk.cyan(''));
