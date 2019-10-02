@@ -48,7 +48,7 @@ function trigger(answers) {
  * @param {*} answers 
  */
 function buildImage(repo, answers) {
-    const ODP_RELEASE = answers.patch || answers.branch;
+    const ODP_RELEASE = answers.release;
     if (repo.short && repo.short !== 'B2B') {
         shell.touch(`CLEAN_BUILD_${repo.short}`)
     }
