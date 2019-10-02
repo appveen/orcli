@@ -20,20 +20,20 @@ function trigger(answers) {
         console.log(chalk.cyan('***********************************'));
         console.log(chalk.green(`PROCESS STARTED FOR :: ${repo.name}`));
         console.log(chalk.cyan('***********************************'));
-        if (repo.dependency && repo.dependency.length > 0) {
-            for (let i = 0; i < repo.dependency.length; i++) {
-                shell.cd(answers.workspace);
-                const dep = repo.dependency[i];
-                console.log(chalk.cyan('***********************************'));
-                console.log(chalk.green(`BUILD STARTED FOR DEPENDENCY :: ${dep}`));
-                console.log(chalk.cyan('***********************************'));
-                const tempRepo = repoList.find(e => e.name === dep);
-                buildImage(tempRepo, answers);
-                console.log(chalk.cyan('***********************************'));
-                console.log(chalk.green(`BUILD ENDED FOR DEPENDENCY :: ${dep}`));
-                console.log(chalk.cyan('***********************************'));
-            }
-        }
+        // if (repo.dependency && repo.dependency.length > 0) {
+        //     for (let i = 0; i < repo.dependency.length; i++) {
+        //         shell.cd(answers.workspace);
+        //         const dep = repo.dependency[i];
+        //         console.log(chalk.cyan('***********************************'));
+        //         console.log(chalk.green(`BUILD STARTED FOR DEPENDENCY :: ${dep}`));
+        //         console.log(chalk.cyan('***********************************'));
+        //         const tempRepo = repoList.find(e => e.name === dep);
+        //         buildImage(tempRepo, answers);
+        //         console.log(chalk.cyan('***********************************'));
+        //         console.log(chalk.green(`BUILD ENDED FOR DEPENDENCY :: ${dep}`));
+        //         console.log(chalk.cyan('***********************************'));
+        //     }
+        // }
         shell.cd(answers.workspace);
         buildImage(repo, answers);
         console.log(chalk.cyan('***********************************'));
