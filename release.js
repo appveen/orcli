@@ -40,6 +40,7 @@ function trigger(answers) {
         console.log(chalk.green(`PROCESS ENDED FOR :: ${repo.name}`));
         console.log(chalk.cyan('***********************************'));
     }
+    saveOtherImages(answers);
 }
 
 /**
@@ -114,6 +115,66 @@ function buildImage(repo, answers) {
             shell.exec(`sh scripts/build_executables.sh`);
         }
     }
+}
+
+/**
+ * 
+ * @param {*} answers 
+ */
+function saveOtherImages(answers) {
+    const ODP_RELEASE = answers.release;
+    shell.cd(answers.workspace);
+
+    console.log(chalk.cyan('***********************************'));
+    console.log(chalk.green(`SAVING IMAGE :: alpine`));
+    console.log(chalk.cyan('***********************************'));
+    shell.cd(answers.saveLocation);
+    shell.exec(`docker save -o alpine.3.8.tar alpine.3.8`)
+        .exec(`bzip2 alpine.3.8.tar`);
+    console.log(chalk.cyan('***********************************'));
+    console.log(chalk.green(`IMAGE SAVED :: alpine`));
+    console.log(chalk.cyan('***********************************'));
+
+    console.log(chalk.cyan('***********************************'));
+    console.log(chalk.green(`SAVING IMAGE :: redis`));
+    console.log(chalk.cyan('***********************************'));
+    shell.cd(answers.saveLocation);
+    shell.exec(`docker save -o redis.tar redis:5-alpine`)
+        .exec(`bzip2 redis.tar`);
+    console.log(chalk.cyan('***********************************'));
+    console.log(chalk.green(`IMAGE SAVED :: redis`));
+    console.log(chalk.cyan('***********************************'));
+
+    console.log(chalk.cyan('***********************************'));
+    console.log(chalk.green(`SAVING IMAGE :: nats`));
+    console.log(chalk.cyan('***********************************'));
+    shell.cd(answers.saveLocation);
+    shell.exec(`docker save -o nats-streaming.tar nats-streaming`)
+        .exec(`bzip2 nats-streaming.tar`);
+    console.log(chalk.cyan('***********************************'));
+    console.log(chalk.green(`IMAGE SAVED :: nats`));
+    console.log(chalk.cyan('***********************************'));
+
+    shell.cd(answers.workspace);
+    if (fs.existsSync('integration-edge-gateway')) {
+        shell.rm('-rf', 'integration-edge-gateway');
+    }
+    shell.mkdir('integration-edge-gateway');
+    shell.cp('odp-b2b-agent/exec/*', 'integration-edge-gateway/.');
+    shell.cp('odp-b2b-agent/edge-confs/*', 'integration-edge-gateway/.');
+    shell.exec(`tar -cvf integration-edge-gateway.${ODP_RELEASE}.tar integration-edge-gateway`)
+        .exec(`bzip2 integration-edge-gateway.${ODP_RELEASE}.tar`);
+    shell.mv(`integration-edge-gateway.${ODP_RELEASE}.tar.bz2`, `${answers.saveLocation}`)
+    
+    shell.cd(answers.workspace);
+    shell.cp('odp-releasebuild/supportedServiceYamls/*', 'yamlFiles/.');
+    shell.cp('odp-releasebuild/yamls/configMap.yaml', 'yamlFiles/.');
+    shell.cp('odp-releasebuild/yamls/servicerole-odp-admin.yaml', 'yamlFiles/.');
+    shell.cd('yamlFiles');
+    shell.rm('*.bak');
+    shell.cd(answers.workspace);
+    shell.exec(`zip -r yamlFiles.zip yamlFiles/*`);
+    shell.mv(`yamlFiles.zip`, `${answers.saveLocation}`);
 }
 
 module.exports.trigger = trigger;
