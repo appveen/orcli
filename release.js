@@ -17,6 +17,9 @@ function trigger(answers) {
     shell.exec(`echo dev > BRANCH`);
     shell.pwd()
     for (let repo of repoList) {
+        console.log(chalk.cyan('***********************************'));
+        console.log(chalk.green(`PROCESS STARTED FOR :: ${repo.name}`));
+        console.log(chalk.cyan('***********************************'));
         if (repo.dependency && repo.dependency.length > 0) {
             for (let i = 0; i < repo.dependency.length; i++) {
                 shell.cd(answers.workspace);
@@ -32,9 +35,6 @@ function trigger(answers) {
             }
         }
         shell.cd(answers.workspace);
-        console.log(chalk.cyan('***********************************'));
-        console.log(chalk.green(`PROCESS STARTED FOR :: ${repo.name}`));
-        console.log(chalk.cyan('***********************************'));
         buildImage(repo, answers);
         console.log(chalk.cyan('***********************************'));
         console.log(chalk.green(`PROCESS ENDED FOR :: ${repo.name}`));
