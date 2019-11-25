@@ -92,12 +92,14 @@ function buildImage(repo, answers) {
     if (fs.existsSync('scripts/build_image.sh')) {
         shell.exec(`sh scripts/build_image.sh ${ODP_RELEASE} hotfix-${answers.hotfix}`);
         shell.cd(answers.saveLocation);
-        const imageName = `odp:${repo.short.toLowerCase()}.${ODP_RELEASE}-hotfix-${answers.hotfix}`;
-        const tarName = `odp_${repo.short.toLowerCase()}.${ODP_RELEASE}-hotfix-${answers.hotfix}.tar`;
-        shell.rm('-rf', `${tarName}`);
-        shell.rm('-rf', `${tarName}.bz2`);
-        shell.exec(`docker save -o ${tarName} ${imageName}`)
-            .exec(`bzip2 ${tarName}`);
+        if (repo.short) {
+            const imageName = `odp:${repo.short.toLowerCase()}.${ODP_RELEASE}-hotfix-${answers.hotfix}`;
+            const tarName = `odp_${repo.short.toLowerCase()}.${ODP_RELEASE}-hotfix-${answers.hotfix}.tar`;
+            shell.rm('-rf', `${tarName}`);
+            shell.rm('-rf', `${tarName}.bz2`);
+            shell.exec(`docker save -o ${tarName} ${imageName}`)
+                .exec(`bzip2 ${tarName}`);
+        }
     } else {
         if (fs.existsSync('scripts/build_jar.sh')) {
             shell.exec(`sh scripts/build_jar.sh`);
