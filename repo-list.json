@@ -93,7 +93,8 @@
     },
     {
         "name": "odp-ui-swagger",
-        "url": "git@bitbucket.org:appveen/odp-ui-swagger.git"
+        "url": "git@bitbucket.org:appveen/odp-ui-swagger.git",
+        "short":"SWAGGER"
     },
     {
         "name": "odp-user-management",
