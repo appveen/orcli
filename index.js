@@ -97,6 +97,14 @@ inquirer
             when: function (response) {
                 return response.releaseType === 'Hotfix';
             },
+            type: 'confirm',
+            name: 'cleanBuild',
+            message: 'You want to do clean build'
+        },
+        {
+            when: function (response) {
+                return response.releaseType === 'Hotfix';
+            },
             type: 'input',
             name: 'hotfix',
             message: 'Please enter hotfix number'

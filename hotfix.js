@@ -48,7 +48,7 @@ function trigger(answers) {
  */
 function buildImage(repo, answers) {
     const ODP_RELEASE = answers.patch || answers.branch;
-    if (repo.short && repo.short !== 'B2B') {
+    if (repo.short && answers.cleanBuild) {
         shell.touch(`CLEAN_BUILD_${repo.short}`)
     }
     if (fs.existsSync(repo.name)) {
