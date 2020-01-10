@@ -99,6 +99,8 @@ function buildImage(repo, answers) {
         if (repo.short === 'SM') {
             shell.exec(`docker save -o odp_base.${ODP_RELEASE}.tar odp:base.${ODP_RELEASE}`)
                 .exec(`bzip2 odp_base.${ODP_RELEASE}.tar`);
+            shell.exec(`docker save -o node.10-alpine.tar node:10-alpine`)
+                .exec(`bzip2 node.10-alpine.tar`);
         }
         if (repo.short === 'B2B') {
             shell.exec(`docker save -o odp_b2b.runner.${ODP_RELEASE}.tar odp:b2b.runner.${ODP_RELEASE}`)
@@ -165,7 +167,7 @@ function saveOtherImages(answers) {
     shell.exec(`tar -cvf integration-edge-gateway.${ODP_RELEASE}.tar integration-edge-gateway`)
         .exec(`bzip2 integration-edge-gateway.${ODP_RELEASE}.tar`);
     shell.mv(`integration-edge-gateway.${ODP_RELEASE}.tar.bz2`, `${answers.saveLocation}`)
-    
+
     shell.cd(answers.workspace);
     shell.cp('odp-releasebuild/supportedServiceYamls/*', 'yamlFiles/.');
     shell.cp('odp-releasebuild/yamls/configMap.yaml', 'yamlFiles/.');
