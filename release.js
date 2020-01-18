@@ -131,6 +131,9 @@ function saveOtherImages(answers) {
     console.log(chalk.green(`SAVING IMAGE :: alpine`));
     console.log(chalk.cyan('***********************************'));
     shell.cd(answers.saveLocation);
+    if (fs.existsSync('alpine.3.8.tar.bz2')) {
+        shell.rm('-rf', 'alpine.3.8.tar.bz2');
+    }
     shell.exec(`docker save -o alpine.3.8.tar alpine.3.8`)
         .exec(`bzip2 alpine.3.8.tar`);
     console.log(chalk.cyan('***********************************'));
@@ -141,6 +144,9 @@ function saveOtherImages(answers) {
     console.log(chalk.green(`SAVING IMAGE :: redis`));
     console.log(chalk.cyan('***********************************'));
     shell.cd(answers.saveLocation);
+    if (fs.existsSync('redis.tar.bz2')) {
+        shell.rm('-rf', 'redis.tar.bz2');
+    }
     shell.exec(`docker save -o redis.tar redis:5-alpine`)
         .exec(`bzip2 redis.tar`);
     console.log(chalk.cyan('***********************************'));
@@ -151,6 +157,9 @@ function saveOtherImages(answers) {
     console.log(chalk.green(`SAVING IMAGE :: nats`));
     console.log(chalk.cyan('***********************************'));
     shell.cd(answers.saveLocation);
+    if (fs.existsSync('nats-streaming.tar.bz2')) {
+        shell.rm('-rf', 'nats-streaming.tar.bz2');
+    }
     shell.exec(`docker save -o nats-streaming.tar nats-streaming`)
         .exec(`bzip2 nats-streaming.tar`);
     console.log(chalk.cyan('***********************************'));
@@ -175,6 +184,9 @@ function saveOtherImages(answers) {
     shell.cd('yamlFiles');
     shell.rm('*.bak');
     shell.cd(answers.workspace);
+    if (fs.existsSync('yamlFiles.zip')) {
+        shell.rm('-rf', 'yamlFiles.zip');
+    }
     shell.exec(`zip -r yamlFiles.zip yamlFiles/*`);
     shell.mv(`yamlFiles.zip`, `${answers.saveLocation}`);
 }
