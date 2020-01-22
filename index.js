@@ -10,6 +10,9 @@ const dateformat = require('dateformat');
 
 const release = require('./release');
 const hotfix = require('./hotfix');
+const freshBuild = require('./fresh-build');
+
+let defaultTag;
 
 if (!process.env.JAVA_HOME) {
     console.log(chalk.cyan('***********************************'));
@@ -65,7 +68,7 @@ inquirer
             message: 'Please select release type',
             choices: [
                 'New Release',
-                // 'Patch Relase',
+                'Fresh Build',
                 'Hotfix'
             ]
         },
@@ -78,7 +81,7 @@ inquirer
             message: 'Please enter release version'
         }, {
             when: function (response) {
-                return response.releaseType === 'Patch Relase' || response.releaseType === 'Hotfix';
+                return response.releaseType === 'Fresh Build' || response.releaseType === 'Hotfix';
             },
             type: 'input',
             name: 'branch',
@@ -86,7 +89,7 @@ inquirer
         },
         {
             when: function (response) {
-                return response.releaseType === 'Hotfix';
+                return response.releaseType === 'Hotfix' || response.releaseType === 'Fresh Build';
             },
             type: 'list',
             name: 'repo',
@@ -95,7 +98,7 @@ inquirer
         },
         {
             when: function (response) {
-                return response.releaseType === 'Hotfix';
+                return response.releaseType === 'Hotfix' || response.releaseType === 'Fresh Build';
             },
             type: 'confirm',
             name: 'cleanBuild',
@@ -111,11 +114,13 @@ inquirer
         },
         {
             when: function (response) {
-                return response.releaseType === 'Patch Relase';
+                defaultTag = response.branch;
+                return response.releaseType === 'Fresh Build';
             },
             type: 'input',
-            name: 'patch',
-            message: 'Please enter patch version'
+            name: 'tag',
+            message: 'Please enter image tag',
+            default: defaultTag
         },
         // {
         //     type: 'confirm',
@@ -160,6 +165,14 @@ inquirer
             release.trigger(answers);
             console.log(chalk.cyan('***********************************'));
             console.log(chalk.green(`RELEASE ENDED :: ${answers.release}`));
+            console.log(chalk.cyan('***********************************'));
+        } else if (answers.releaseType == 'Fresh Build') {
+            console.log(chalk.cyan('***********************************'));
+            console.log(chalk.green(`FRESH BUILD STARTED :: ${answers.branch}`));
+            console.log(chalk.cyan('***********************************'));
+            freshBuild.trigger(answers);
+            console.log(chalk.cyan('***********************************'));
+            console.log(chalk.green(`FRESH BUILD ENDED :: ${answers.branch}`));
             console.log(chalk.cyan('***********************************'));
         } else {
             console.log(chalk.cyan('***********************************'));
