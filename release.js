@@ -80,9 +80,6 @@ function buildImage(repo, answers) {
         shell.exec(`git checkout dev`);
         shell.exec(`echo ${new Date().toISOString()} > ../LAST_PULL_${repo.name.toUpperCase()}`);
     }
-    if (repo.node) {
-        shell.exec(`npm i`);
-    }
     if (fs.existsSync('scripts/build_image.sh')) {
         shell.exec(`sh scripts/build_image.sh ${ODP_RELEASE}`);
         shell.cd(answers.saveLocation);
