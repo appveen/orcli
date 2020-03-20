@@ -10,11 +10,21 @@ const repoList = jsonfile.readFileSync(path.join(process.cwd(), 'repo-list.json'
 function hotfixScript(answers) {
     const script = [];
     const ODP_RELEASE = answers.patch || answers.branch;
+    script.push(`#!/bin/bash`);
+    script.push(`if [ ! -d ${answers.workspace} ]; then`);
+    script.push(`\t mkdir ${answers.workspace}`);
+    script.push(`fi`);
     script.push(`cd ${answers.workspace}`);
     script.push(`rm -rf ODP_RELEASE`);
     script.push(`rm -rf BRANCH`);
+    script.push(`rm -rf CICD`);
+    script.push(`rm -rf ODP_NAMESPACE`);
     script.push(`echo ${ODP_RELEASE} > ODP_RELEASE`);
     script.push(`echo ${answers.branch} > BRANCH`);
+    if(answers.deploy){
+        script.push(`echo ${answers.namespace} > ODP_NAMESPACE`);
+        script.push(`echo true > CICD`);
+    }
     script.push(`cwd=$pwd`);
     const repo = repoList.find(e => e.name === answers.repo);
     if (repo.dependency && repo.dependency.length > 0) {
@@ -39,7 +49,8 @@ function hotfixScript(answers) {
     script.push(`echo "${chalk.green('***********************************')}"`);
     script.push(`echo "${chalk.green(`PROCESS ENDED FOR :: ${repo.name}`)}"`);
     script.push(`echo "${chalk.green('***********************************')}"`);
-    return script.join('\r\n');
+    script.push(`exit 0`);
+    return script.join('\n');
 }
 
 /**
@@ -56,12 +67,22 @@ function buildImage(repo, answers, script) {
     if (repo.short && answers.cleanBuild) {
         script.push(`touch CLEAN_BUILD_${repo.short}`);
     }
+    script.push(`if [ ! -d ${answers.workspace} ]; then`);
+    script.push(`\t mkdir ${answers.workspace}`);
+    script.push(`fi`);
+    script.push(`if [ ! -d ${answers.saveLocation} ]; then`);
+    script.push(`\t mkdir ${answers.saveLocation}`);
+    script.push(`fi`);
+    script.push(`if [ ! -d ${path.join(answers.saveLocation, 'yamls')} ]; then`);
+    script.push(`\t mkdir ${path.join(answers.saveLocation, 'yamls')}`);
+    script.push(`fi`);
+    script.push(`cd ${answers.workspace}`);
     // script.push(`echo ${repo.key} > ${repo.name.toUpperCase()}-KEY`);
     // script.push(`chmod 600 ${repo.name.toUpperCase()}-KEY`);
     script.push(`if [ -d ${repo.name} ]; then`);
     script.push(`\t lastPull=$(<LAST_PULL_${repo.name.toUpperCase()})`);
     script.push(`\t cd ${repo.name}`);
-    script.push(`\t export WORKSPACE=$cwd`);
+    // script.push(`\t export WORKSPACE=$cwd`);
     script.push(`\t git stash`);
     script.push(`\t git checkout ${answers.branch}`);
     // script.push(`\t ssh-agent bash -c 'ssh-add ../${repo.name.toUpperCase()}-KEY; git pull origin ${answers.branch}'`);
@@ -76,10 +97,11 @@ function buildImage(repo, answers, script) {
     script.push(`else`);
     // script.push(`\t ssh-agent bash -c 'ssh-add ./${repo.name.toUpperCase()}-KEY; git clone ${repo.url}'`);
     script.push(`\t git clone ${repo.url}`);
-    script.push(`\t export WORKSPACE=$cwd`);
+    script.push(`\t cd ${repo.name}`);
     script.push(`\t git checkout ${answers.branch}`);
     script.push(`fi`);
-    script.push(`echo date > ../LAST_PULL_${repo.name.toUpperCase()}`);
+    script.push(`echo \`date\` > ../LAST_PULL_${repo.name.toUpperCase()}`);
+    script.push(`export WORKSPACE=${path.join(answers.workspace, repo.name)}`);
     script.push(`if [ -f ${repo.short.toLowerCase()}.yaml ]; then`);
     script.push(`\t rm -rf ${yamlPath}`);
     script.push(`\t cp ${repo.short.toLowerCase()}.yaml ${yamlPath}`);

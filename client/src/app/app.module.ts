@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -14,6 +15,7 @@ import { ApiService } from './api.service';
 import { DataService } from './data.service';
 import { HomeComponent } from './dashboard/home/home.component';
 import { ReleaseComponent } from './dashboard/release/release.component';
+import { BuildsComponent } from './dashboard/builds/builds.component';
 
 @NgModule({
   declarations: [
@@ -22,10 +24,12 @@ import { ReleaseComponent } from './dashboard/release/release.component';
     DashboardComponent,
     HotfixComponent,
     HomeComponent,
-    ReleaseComponent
+    ReleaseComponent,
+    BuildsComponent
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,

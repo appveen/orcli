@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef, NgbTooltipConfig } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from 'src/app/api.service';
 
@@ -20,7 +20,8 @@ export class HotfixComponent implements OnInit {
     private fb: FormBuilder,
     private api: ApiService,
     private toastr: ToastrService,
-    private modal: NgbModal) {
+    private modal: NgbModal,
+    private tooltipConfig: NgbTooltipConfig) {
     const self = this;
     self.repoList = [];
     self.form = self.fb.group({
@@ -35,6 +36,7 @@ export class HotfixComponent implements OnInit {
 
   ngOnInit(): void {
     const self = this;
+    self.tooltipConfig.container = 'body';
     self.fetchRepoList();
     self.form.get('repo').disable();
     self.form.get('deploy').valueChanges.subscribe(flag => {
@@ -69,16 +71,17 @@ export class HotfixComponent implements OnInit {
     self.triggerHotfixModalRef = self.modal.open(self.triggerHotfixModal, { centered: true });
     self.triggerHotfixModalRef.result.then(close => {
       self.selectedRepo = null;
-      self.form.reset({ cleanBuild: true });
+      self.form.reset({ cleanBuild: true, deploy: false, upload: false });
     }, dismiss => {
       self.selectedRepo = null;
-      self.form.reset({ cleanBuild: true });
+      self.form.reset({ cleanBuild: true, deploy: false, upload: false });
     });
   }
 
   triggerHotfix() {
     const self = this;
     self.api.post('orcli', '/hotfix', self.form.getRawValue()).subscribe((res: any) => {
+      self.triggerHotfixModalRef.close(false);
       self.toastr.success(res.message);
     }, err => {
       self.toastr.error(err.error.message);

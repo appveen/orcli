@@ -5,6 +5,7 @@ export const environment = {
     orcli: '/orcli',
     release: '/release',
     hotfix: '/hotfix',
-    user: '/user'
+    user: '/user',
+    builds: '/builds'
   }
 };

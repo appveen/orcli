@@ -7,6 +7,8 @@ import { ReleaseComponent } from './dashboard/release/release.component';
 import { HotfixComponent } from './dashboard/hotfix/hotfix.component';
 import { LoginGuard } from './guards/login.guard';
 import { AuthGuard } from './guards/auth.guard';
+import { BuildComponent } from './dashboard/build/build.component';
+import { BuildsComponent } from './dashboard/builds/builds.component';
 
 
 const routes: Routes = [
@@ -17,7 +19,8 @@ const routes: Routes = [
       { path: '', pathMatch: 'full', redirectTo: 'hotfix' },
       { path: 'home', component: HomeComponent },
       { path: 'hotfix', component: HotfixComponent },
-      { path: 'release', component: ReleaseComponent }
+      { path: 'release', component: ReleaseComponent },
+      { path: 'builds', component: BuildsComponent }
     ]
   }
 ];

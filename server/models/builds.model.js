@@ -17,6 +17,7 @@ async function init() {
     columns.push(`status TEXT NOT NULL`);
     columns.push(`started INTEGER`);
     columns.push(`ended INTEGER`);
+    columns.push(`logs TEXT`);
     db.run(`CREATE TABLE IF NOT EXISTS builds(${columns.join(',')})`, function (err) {
         if (err) {
             logger.error(err);
@@ -42,6 +43,7 @@ init().catch(err => {
  * @property {string} status
  * @property {number} started
  * @property {number} ended
+ * @property {string} logs
  */
 
 
@@ -76,7 +78,7 @@ function countDocuments(filter) {
 * @param {string} options.sort
 * @param {string} options.select
 * @param {string} options.filter
-* @returns {BuildModel[]}
+* @returns {Promise<BuildModel[]>}
 */
 function find(options) {
     if (!options) {
@@ -119,11 +121,11 @@ function find(options) {
 /**
 * 
 * @param {string} id 
-* @returns {BuildModel}
+* @returns {Promise<BuildModel>}
 */
 function findById(id) {
     return new Promise((resolve, reject) => {
-        db.get(`SELECT * FROM builds WHERE id=${id}`, function (err, row) {
+        db.get(`SELECT * FROM builds WHERE _id=${id}`, function (err, row) {
             if (err) {
                 logger.error(err);
                 reject(err);

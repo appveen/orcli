@@ -1,4 +1,5 @@
 const os = require('os');
+const fs = require('fs');
 const path = require('path');
 const makeDir = require('make-dir');
 const dateformat = require('dateformat');
@@ -8,6 +9,7 @@ const jsonfile = require('jsonfile');
 
 const buildsModel = require('../models/builds.model');
 const prepareScript = require('../utils/prepare-script');
+const shell = require('../utils/shell');
 
 /**
  * @type {[{name:string,url:string,node:boolean,short:string,dependency:string[]}]}
@@ -55,8 +57,45 @@ router.post('/hotfix', (req, res) => {
             makeDir.sync(payload.saveLocation);
             makeDir.sync(path.join(payload.saveLocation, 'yamls'));
             const script = prepareScript.hotfixScript(payload);
+            const filepath = path.join(os.tmpdir(), Date.now().toString());
+            logger.info(os.tmpdir(), filepath);
+            fs.writeFileSync(filepath, script, {
+                encoding: 'utf-8'
+            });
+            const repo = repoList.find(e => e.name === payload.repo);
+            const buildData = {};
+            buildData.repo = payload.repo;
+            buildData.branch = payload.branch;
+            buildData.clean = payload.cleanBuild;
+            if (repo.short) {
+                buildData.tag = 'odp:' + repo.short.toLowerCase() + '.' + payload.branch + '-hotfix-' + payload.hotfix;
+            }
+            buildData.status = 'Processing';
+            buildData.started = Date.now();
+            buildsModel.create(buildData).then(status => {
+                logger.info('Build Logged', status.lastID);
+                const lastID = status.lastID;
+                shell.execute('sh ' + filepath).subscribe(async (data) => {
+                    if (data) {
+                        console.log(data);
+                        const newData = {};
+                        const bd = await buildsModel.findById(lastID);
+                        newData.logs = bd.logs + '\n' + data;
+                        const status = await buildsModel.findByIdAndUpdate(lastID, newData);
+                    } else {
+                        const newData = {
+                            status: 'Success'
+                        };
+                        const status = await buildsModel.findByIdAndUpdate(lastID, newData);
+                    }
+                }, err => {
+                    console.log('Build Failed', err);
+                });
+            }).catch(err => {
+                logger.error(err);
+            });
             res.status(200).json({
-                script
+                message: 'Build Started'
             });
         } catch (e) {
             if (typeof e === 'string') {
