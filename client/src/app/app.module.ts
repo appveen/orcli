@@ -2,7 +2,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { ToastrModule } from 'ngx-toastr';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrModule, ToastrService } from 'ngx-toastr';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -29,11 +30,19 @@ import { ReleaseComponent } from './dashboard/release/release.component';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    ToastrModule
+    NgbModule,
+    ToastrModule.forRoot({
+      autoDismiss: false,
+      closeButton: true,
+      countDuplicates: true,
+      enableHtml: true,
+      maxOpened: 3
+    })
   ],
   providers: [
     ApiService,
-    DataService
+    DataService,
+    ToastrService
   ],
   bootstrap: [AppComponent]
 })

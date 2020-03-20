@@ -1,8 +1,6 @@
 @import "src/assets/bootstarp/_functions";
 @import "src/assets/bootstarp/_variables";
-
-$header-height: 50px;
-$sidenav-width: 200px;
+@import "src/my-variables";
 
 .dashboard {
   min-width: 100vw;
