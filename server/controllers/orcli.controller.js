@@ -1,7 +1,6 @@
 const os = require('os');
 const fs = require('fs');
 const path = require('path');
-const makeDir = require('make-dir');
 const dateformat = require('dateformat');
 const router = require('express').Router();
 const log4js = require('log4js');
@@ -53,9 +52,6 @@ router.post('/hotfix', (req, res) => {
             }
             const date = new Date();
             payload.saveLocation = path.join(payload.workspace, 'images', dateformat(date, 'yyyy_mm_dd'));
-            makeDir.sync(payload.workspace);
-            makeDir.sync(payload.saveLocation);
-            makeDir.sync(path.join(payload.saveLocation, 'yamls'));
             const script = prepareScript.hotfixScript(payload);
             const filepath = path.join(os.tmpdir(), Date.now().toString());
             logger.info(os.tmpdir(), filepath);
@@ -80,7 +76,7 @@ router.post('/hotfix', (req, res) => {
                         console.log(data);
                         const newData = {};
                         const bd = await buildsModel.findById(lastID);
-                        newData.logs = bd.logs + '\n' + data;
+                        newData.logs = bd.logs + data;
                         const status = await buildsModel.findByIdAndUpdate(lastID, newData);
                     } else {
                         const newData = {
@@ -90,6 +86,10 @@ router.post('/hotfix', (req, res) => {
                     }
                 }, err => {
                     console.log('Build Failed', err);
+                    const newData = {
+                        status: 'Failed'
+                    };
+                    const status = await buildsModel.findByIdAndUpdate(lastID, newData);
                 });
             }).catch(err => {
                 logger.error(err);

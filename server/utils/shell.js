@@ -1,28 +1,5 @@
-const { exec, execFile, spawn } = require('child_process');
+const { exec } = require('child_process');
 const { Observable } = require('rxjs');
-
-/**
- * 
- * @param {string} command 
- */
-function executeSpawn(command) {
-    return new Observable((observe) => {
-        const child = spawn(command);
-        child.on('error', function (err) {
-            observe.error(err);
-        });
-        child.on('close', function () {
-            observe.next(null);
-            observe.complete();
-        });
-        child.stdout.on('data', function (chunk) {
-            observe.next(chunk);
-        });
-        child.stderr.on('data', function (chunk) {
-            observe.next(chunk);
-        });
-    });
-}
 
 /**
  * 
@@ -32,6 +9,7 @@ function execute(command) {
     return new Observable((observe) => {
         const child = exec(command);
         child.on('error', function (err) {
+            console.log('*********** BUILD FAILED ***********');
             observe.error(err);
         });
         child.on('close', function () {
@@ -41,35 +19,19 @@ function execute(command) {
         child.stdout.on('data', function (chunk) {
             observe.next(chunk);
         });
-        child.stderr.on('data', function (chunk) {
-            observe.next(chunk);
-        });
-    });
-}
-
-/**
- * 
- * @param {string} filename 
- */
-function executeFile(filename) {
-    return new Observable((observe) => {
-        const child = execFile(filename);
-        child.on('error', function (err) {
+        child.stdout.on('error', function (err) {
+            console.log('*********** BUILD FAILED ***********');
             observe.error(err);
         });
-        child.on('close', function () {
-            observe.next(null);
-            observe.complete();
-        });
-        child.stdout.on('data', function (chunk) {
-            observe.next(chunk);
-        });
         child.stderr.on('data', function (chunk) {
             observe.next(chunk);
+        });
+        child.stderr.on('error', function (err) {
+            console.log('*********** BUILD FAILED ***********');
+            observe.error(err);
         });
     });
 }
 
-module.exports.executeSpawn = executeSpawn;
+
 module.exports.execute = execute;
-module.exports.executeFile = executeFile;

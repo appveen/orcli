@@ -11,9 +11,16 @@ function hotfixScript(answers) {
     const script = [];
     const ODP_RELEASE = answers.patch || answers.branch;
     script.push(`#!/bin/bash`);
-    script.push(`if [ ! -d ${answers.workspace} ]; then`);
-    script.push(`\t mkdir ${answers.workspace}`);
-    script.push(`fi`);
+    script.push(`SET -e`);
+    // script.push(`if [ ! -d ${answers.workspace} ]; then`);
+    script.push(`\t mkdir -p ${answers.workspace}`);
+    // script.push(`fi`);
+    // script.push(`if [ ! -d ${answers.saveLocation} ]; then`);
+    script.push(`\t mkdir -p ${answers.saveLocation}`);
+    // script.push(`fi`);
+    // script.push(`if [ ! -d ${path.join(answers.saveLocation, 'yamls')} ]; then`);
+    script.push(`\t mkdir -p ${path.join(answers.saveLocation, 'yamls')}`);
+    // script.push(`fi`);
     script.push(`cd ${answers.workspace}`);
     script.push(`rm -rf ODP_RELEASE`);
     script.push(`rm -rf BRANCH`);
@@ -67,15 +74,6 @@ function buildImage(repo, answers, script) {
     if (repo.short && answers.cleanBuild) {
         script.push(`touch CLEAN_BUILD_${repo.short}`);
     }
-    script.push(`if [ ! -d ${answers.workspace} ]; then`);
-    script.push(`\t mkdir ${answers.workspace}`);
-    script.push(`fi`);
-    script.push(`if [ ! -d ${answers.saveLocation} ]; then`);
-    script.push(`\t mkdir ${answers.saveLocation}`);
-    script.push(`fi`);
-    script.push(`if [ ! -d ${path.join(answers.saveLocation, 'yamls')} ]; then`);
-    script.push(`\t mkdir ${path.join(answers.saveLocation, 'yamls')}`);
-    script.push(`fi`);
     script.push(`cd ${answers.workspace}`);
     // script.push(`echo ${repo.key} > ${repo.name.toUpperCase()}-KEY`);
     // script.push(`chmod 600 ${repo.name.toUpperCase()}-KEY`);

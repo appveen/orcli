@@ -9,6 +9,7 @@ import { ApiService, APIOptions } from 'src/app/api.service';
 })
 export class BuildsComponent implements OnInit {
 
+  selectedLog: any;
   buildList: Array<any>;
   apiOptions: APIOptions;
   constructor(

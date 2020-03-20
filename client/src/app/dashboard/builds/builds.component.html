@@ -21,7 +21,7 @@
         <td>{{item.ended | date:'yyy-MM-dd HH:mm:ss'}}</td>
         <td>{{item.tag}}</td>
         <td>
-          <button type="button" class="btn btn-link">Logs</button>
+          <button type="button" class="btn btn-link" (click)="selectedLog=item">Logs</button>
         </td>
       </tr>
       <tr *ngIf="buildList.length==0">
@@ -48,4 +48,12 @@
       </li>
     </ul>
   </nav>
+</div>
+
+<div class="logs-modal position-fixed bg-white border-left" [ngClass]="{'show': selectedLog}">
+  <div class="header d-flex align-items-center justify-content-between bg-secondary text-white p-2">
+    <span class="font-weight-bold">Logs</span>
+    <button type="button" class="btn btn-link text-white" (click)="selectedLog=null;">Close</button>
+  </div>
+  <pre class="logs p-2">{{selectedLog?.logs}}</pre>
 </div>
