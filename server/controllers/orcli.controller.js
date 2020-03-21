@@ -84,7 +84,7 @@ router.post('/hotfix', (req, res) => {
                         };
                         const status = await buildsModel.findByIdAndUpdate(lastID, newData);
                     }
-                }, err => {
+                }, async (err) => {
                     console.log('Build Failed', err);
                     const newData = {
                         status: 'Failed'

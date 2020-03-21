@@ -7,7 +7,6 @@ import { ReleaseComponent } from './dashboard/release/release.component';
 import { HotfixComponent } from './dashboard/hotfix/hotfix.component';
 import { LoginGuard } from './guards/login.guard';
 import { AuthGuard } from './guards/auth.guard';
-import { BuildComponent } from './dashboard/build/build.component';
 import { BuildsComponent } from './dashboard/builds/builds.component';
 
 
