@@ -16,6 +16,7 @@ import { DataService } from './data.service';
 import { HomeComponent } from './dashboard/home/home.component';
 import { ReleaseComponent } from './dashboard/release/release.component';
 import { BuildsComponent } from './dashboard/builds/builds.component';
+import { TasksComponent } from './dashboard/tasks/tasks.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { BuildsComponent } from './dashboard/builds/builds.component';
     HotfixComponent,
     HomeComponent,
     ReleaseComponent,
-    BuildsComponent
+    BuildsComponent,
+    TasksComponent
   ],
   imports: [
     BrowserModule,

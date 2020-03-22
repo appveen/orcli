@@ -12,8 +12,10 @@ async function init() {
     columns.push(`name TEXT NOT NULL`);
     columns.push(`repo TEXT NOT NULL`);
     columns.push(`branch TEXT NOT NULL`);
+    columns.push(`cron TEXT`);
     columns.push(`script TEXT`);
     columns.push(`sshKey TEXT`);
+    columns.push(`lastBuild INTEGER`);
     db.run(`CREATE TABLE IF NOT EXISTS tasks(${columns.join(',')})`, function (err) {
         if (err) {
             logger.error(err);
@@ -30,17 +32,21 @@ init().catch(err => {
 
 /**
  * @typedef TaskModel
- * @property {string} username
- * @property {string} password
+ * @property {number} _id
+ * @property {string} name
+ * @property {string} repo
  * @property {string} branch
- * @property {string} type
+ * @property {string} cron
+ * @property {string} script
+ * @property {string} sshKey
+ * @property {number} lastBuild
  */
 
 
 /**
 * 
 * @param {string} filter
-* @returns {number}
+* @returns {Promise<number>}
 */
 function countDocuments(filter) {
     return new Promise((resolve, reject) => {
@@ -68,7 +74,7 @@ function countDocuments(filter) {
 * @param {string} options.sort
 * @param {string} options.select
 * @param {string} options.filter
-* @returns {TaskModel[]}
+* @returns {Promise<TaskModel[]>}
 */
 function find(options) {
     if (!options) {
@@ -111,7 +117,7 @@ function find(options) {
 /**
 * 
 * @param {string} id 
-* @returns {TaskModel}
+* @returns {Promise<TaskModel>}
 */
 function findById(id) {
     return new Promise((resolve, reject) => {

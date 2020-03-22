@@ -68,7 +68,7 @@
       <span *ngIf="imageTag" class="text-muted">IMAGE TAG : {{imageTag}}</span>
     </form>
   </div>
-  <div class="model-footer d-flex justify-content-end p-3">
+  <div class="modal-footer d-flex justify-content-end p-3">
     <button type="button" class="btn btn-dark mr-3" (click)="triggerHotfixModalRef.close(false)">Cancel</button>
     <button type="button" class="btn btn-primary" (click)="triggerHotfix()" [disabled]="form.invalid">
       <span *ngIf="!form.get('deploy').value">Build</span>

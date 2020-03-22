@@ -6,6 +6,7 @@ export const environment = {
     release: '/release',
     hotfix: '/hotfix',
     user: '/user',
-    builds: '/builds'
+    builds: '/builds',
+    tasks: '/tasks'
   }
 };
