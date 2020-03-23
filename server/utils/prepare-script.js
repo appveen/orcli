@@ -12,15 +12,10 @@ function hotfixScript(answers) {
     const ODP_RELEASE = answers.patch || answers.branch;
     script.push(`#!/bin/bash`);
     script.push(`SET -e`);
-    // script.push(`if [ ! -d ${answers.workspace} ]; then`);
-    script.push(`\t mkdir -p ${answers.workspace}`);
-    // script.push(`fi`);
-    // script.push(`if [ ! -d ${answers.saveLocation} ]; then`);
-    script.push(`\t mkdir -p ${answers.saveLocation}`);
-    // script.push(`fi`);
-    // script.push(`if [ ! -d ${path.join(answers.saveLocation, 'yamls')} ]; then`);
-    script.push(`\t mkdir -p ${path.join(answers.saveLocation, 'yamls')}`);
-    // script.push(`fi`);
+    script.push(`cDate=\`date +%Y.%m.%d.%H.%M\` #Current date and time`);
+    script.push(`mkdir -p ${answers.workspace}`);
+    script.push(`mkdir -p ${answers.saveLocation}`);
+    script.push(`mkdir -p ${path.join(answers.saveLocation, 'yamls')}`);
     script.push(`cd ${answers.workspace}`);
     script.push(`rm -rf ODP_RELEASE`);
     script.push(`rm -rf BRANCH`);
@@ -28,9 +23,8 @@ function hotfixScript(answers) {
     script.push(`rm -rf ODP_NAMESPACE`);
     script.push(`echo ${ODP_RELEASE} > ODP_RELEASE`);
     script.push(`echo ${answers.branch} > BRANCH`);
-    if(answers.deploy){
+    if (answers.deploy) {
         script.push(`echo ${answers.namespace} > ODP_NAMESPACE`);
-        script.push(`echo true > CICD`);
     }
     script.push(`cwd=$pwd`);
     const repo = repoList.find(e => e.name === answers.repo);
@@ -107,7 +101,11 @@ function buildImage(repo, answers, script) {
     script.push(`\t sed -i.bak s#__release__#${ODP_RELEASE}-hotfix-${answers.hotfix}#  ${yamlPath}`);
     script.push(`fi`);
     script.push(`if [ -f scripts/build_image.sh ]; then`);
-    script.push(`\t sh scripts/build_image.sh ${ODP_RELEASE} hotfix-${answers.hotfix}`);
+    if (answers.deploy) {
+        script.push(`\t sh scripts/build_image.sh ${ODP_RELEASE} hotfix-${answers.hotfix}"_"$cDate`);
+    } else {
+        script.push(`\t sh scripts/build_image.sh ${ODP_RELEASE} hotfix-${answers.hotfix}`);
+    }
     script.push(`\t if [ -f ${repo.short.toLowerCase()}.yaml ]; then`);
     script.push(`\t\t  cd ${answers.saveLocation}`);
     script.push(`\t\t  rm -rf ${tarName}`);
