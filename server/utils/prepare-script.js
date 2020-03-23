@@ -68,6 +68,9 @@ function buildImage(repo, answers, script) {
     if (repo.short && answers.cleanBuild) {
         script.push(`touch CLEAN_BUILD_${repo.short}`);
     }
+    if (!repo.short) {
+        repo.short = '';
+    }
     script.push(`cd ${answers.workspace}`);
     // script.push(`echo ${repo.key} > ${repo.name.toUpperCase()}-KEY`);
     // script.push(`chmod 600 ${repo.name.toUpperCase()}-KEY`);
@@ -100,6 +103,7 @@ function buildImage(repo, answers, script) {
     script.push(`\t sed -i.bak s/__release_tag__/"'${ODP_RELEASE}'"/  ${yamlPath}`);
     script.push(`\t sed -i.bak s#__release__#${ODP_RELEASE}-hotfix-${answers.hotfix}#  ${yamlPath}`);
     script.push(`fi`);
+    script.push(`TAG=${ODP_RELEASE}-hotfix-${answers.hotfix}"_"$cDate`);
     script.push(`if [ -f scripts/build_image.sh ]; then`);
     if (answers.deploy) {
         script.push(`\t sh scripts/build_image.sh ${ODP_RELEASE} hotfix-${answers.hotfix}"_"$cDate`);
@@ -107,11 +111,14 @@ function buildImage(repo, answers, script) {
         script.push(`\t sh scripts/build_image.sh ${ODP_RELEASE} hotfix-${answers.hotfix}`);
     }
     script.push(`\t if [ -f ${repo.short.toLowerCase()}.yaml ]; then`);
-    script.push(`\t\t  cd ${answers.saveLocation}`);
-    script.push(`\t\t  rm -rf ${tarName}`);
-    script.push(`\t\t  rm -rf ${tarName}.bz2`);
-    script.push(`\t\t  docker save -o ${tarName} ${imageName}`);
-    script.push(`\t\t  bzip2 ${tarName}`);
+    script.push(`\t\t cd ${answers.saveLocation}`);
+    script.push(`\t\t rm -rf ${tarName}`);
+    script.push(`\t\t rm -rf ${tarName}.bz2`);
+    script.push(`\t\t docker save -o ${tarName} ${imageName}`);
+    script.push(`\t\t bzip2 ${tarName}`);
+    if (answers.deploy) {
+        script.push(`\t\t kubectl set image deployment/${repo.short.toLowerCase()} ${repo.short.toLowerCase()}=odp:${repo.short.toLowerCase()}.$TAG -n ${answers.namespace} --record=true`);
+    }
     script.push(`\t fi`);
     script.push(`else`);
     script.push(`\t if [ -f scripts/build_jar.sh ]; then`);
