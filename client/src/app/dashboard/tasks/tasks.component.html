@@ -19,7 +19,8 @@
         <td>{{item.status}}</td>
         <td>{{item.lastBuild}}</td>
         <td>
-          <button type="button" class="btn btn-link" (click)="selectedLog=item">Build Now</button>
+          <button type="button" class="btn btn-link" (click)="openBuildTaskModal(item)">Build Now</button>
+          <button type="button" class="btn btn-link text-danger" (click)="openDeleteTaskModal(item)">Delete</button>
         </td>
       </tr>
       <tr *ngIf="taskList.length==0">
@@ -87,5 +88,33 @@
   <div class="modal-footer d-flex justify-content-end p-3">
     <button type="button" class="btn btn-dark mr-3" (click)="createTaskModelRef.close(false)">Cancel</button>
     <button type="button" class="btn btn-primary" (click)="triggerCreate()" [disabled]="form.invalid">Create</button>
+  </div>
+</ng-template>
+
+
+<ng-template #deleteTaskModel>
+  <div class="modal-header">
+    <div class="modal-title font-weight-bold">Delete Task - <span class="text-danger">{{selectedTask?.name}}</span></div>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to delete task: <span class="font-weight-bold text-danger">{{selectedTask?.name}}</span></p>
+  </div>
+  <div class="modal-footer d-flex justify-content-end p-3">
+    <button type="button" class="btn btn-dark mr-3" (click)="deleteTaskModelRef.close(false)">Cancel</button>
+    <button type="button" class="btn btn-danger" (click)="triggerDelete()">Delete</button>
+  </div>
+</ng-template>
+
+
+<ng-template #buildTaskModel>
+  <div class="modal-header">
+    <div class="modal-title font-weight-bold">Build Task - <span class="text-primary">{{selectedTask?.name}}</span></div>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to build task: <span class="font-weight-bold text-primary">{{selectedTask?.name}}</span></p>
+  </div>
+  <div class="modal-footer d-flex justify-content-end p-3">
+    <button type="button" class="btn btn-dark mr-3" (click)="buildTaskModelRef.close(false)">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="triggerBuild()">Build</button>
   </div>
 </ng-template>

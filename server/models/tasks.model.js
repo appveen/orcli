@@ -54,7 +54,7 @@ function countDocuments(filter) {
         if (filter) {
             condition = 'WHERE ' + filter;
         }
-        db.get(`SELECT COUNT(*) AS count FROM users ${filter}`, function (err, row) {
+        db.get(`SELECT COUNT(*) AS count FROM tasks ${filter}`, function (err, row) {
             if (err) {
                 logger.error(err);
                 reject(err);
@@ -88,9 +88,9 @@ function find(options) {
     }
     let stmt = ['SELECT'];
     if (options.select) {
-        stmt.push(`${options.select} FROM users`);
+        stmt.push(`${options.select} FROM tasks`);
     } else {
-        stmt.push(`* FROM users`);
+        stmt.push(`* FROM tasks`);
     }
     if (options.filter) {
         stmt.push(`WHERE ${options.filter}`);
@@ -121,7 +121,7 @@ function find(options) {
 */
 function findById(id) {
     return new Promise((resolve, reject) => {
-        db.get(`SELECT * FROM users WHERE _id=${id}`, function (err, row) {
+        db.get(`SELECT * FROM tasks WHERE _id=${id}`, function (err, row) {
             if (err) {
                 logger.error(err);
                 reject(err);
@@ -140,14 +140,21 @@ function findById(id) {
  */
 function create(payload) {
     return new Promise((resolve, reject) => {
-        const columns = Object.keys(payload);
-        const values = Object.values(payload).map(e => {
-            if (typeof e === 'string') {
-                return "'" + e + "'";
+        const columns = [];
+        const values = [];
+        Object.keys(payload).map(e => {
+            if (payload[e] != null && payload[e] != undefined) {
+                columns.push(e);
+                if (typeof e === 'string') {
+                    values.push("'" + payload[e] + "'");
+                } else {
+                    values.push(payload[e]);
+                }
             }
-            return e;
         });
-        db.run(`INSERT INTO users(${columns.join(',')}) VALUES(${values.join(',')})`, function (err) {
+        console.log(`INSERT INTO tasks(${columns.join(',')}) VALUES(${values.join(',')})`);
+
+        db.run(`INSERT INTO tasks(${columns.join(',')}) VALUES(${values.join(',')})`, function (err) {
             if (err) {
                 logger.error(err);
                 reject(err);
@@ -175,7 +182,7 @@ function findByIdAndUpdate(id, payload) {
                 }
             }
         });
-        db.run(`UPDATE users ${values.join(',')} WHERE _id=${id}`, function (err) {
+        db.run(`UPDATE tasks ${values.join(',')} WHERE _id=${id}`, function (err) {
             if (err) {
                 logger.error(err);
                 reject(err);
@@ -193,7 +200,7 @@ function findByIdAndUpdate(id, payload) {
  */
 function findByIdAndRemove(id) {
     return new Promise((resolve, reject) => {
-        db.run(`DELETE FROM users WHERE _id=${id}`, function (err) {
+        db.run(`DELETE FROM tasks WHERE _id=${id}`, function (err) {
             if (err) {
                 logger.error(err);
                 reject(err);
