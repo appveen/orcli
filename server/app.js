@@ -1,15 +1,20 @@
 const fs = require('fs');
 const path = require('path');
 const express = require('express');
+const http = require('http');
 const bodyParser = require('body-parser');
 const log4js = require('log4js');
+const socket = require('socket.io');
 
 const PORT = process.env.PORT || 3000;
 const LOG_LEVEL = process.env.LOG_LEVEL || 'info';
 
 const logger = log4js.getLogger('server');
 const app = express();
+const server = http.createServer(app);
+const io = socket(server);
 
+global.socket = io;
 global.dbPath = path.join(__dirname, 'db');
 
 if (!fs.existsSync(global.dbPath)) {
@@ -49,10 +54,15 @@ app.get('/', (req, res) => {
 });
 
 
-app.listen(PORT, (err) => {
+server.listen(PORT, (err) => {
     if (!err) {
         logger.info('Server is listening on port', PORT);
     } else {
         logger.error(err);
     }
+});
+
+
+io.on('connection', function (socket) {
+    logger.info('Socket Client Connected.', socket.id);
 });

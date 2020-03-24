@@ -10,6 +10,8 @@ const buildsModel = require('../models/builds.model');
 const prepareScript = require('../utils/prepare-script');
 const shell = require('../utils/shell');
 
+const socket = global.socket;
+
 /**
  * @type {[{name:string,url:string,node:boolean,short:string,dependency:string[]}]}
  */
@@ -73,7 +75,10 @@ router.post('/hotfix', (req, res) => {
                 const lastID = status.lastID;
                 shell.execute('sh ' + filepath).subscribe(async (data) => {
                     if (data) {
-                        console.log(data);
+                        socket.emit('logs', {
+                            _id: lastID,
+                            logs: data
+                        });
                         const newData = {};
                         const bd = await buildsModel.findById(lastID);
                         newData.logs = bd.logs + data;

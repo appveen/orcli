@@ -29,5 +29,10 @@ $logs-modal-width: 70vw;
     overflow: auto;
     min-height: calc(100vh - 32px - #{$header-height});
     max-height: calc(100vh - 32px - #{$header-height});
+    padding-bottom: 30px !important;
+  }
+  .logs-spinner {
+    bottom: 16px;
+    left: 12px;
   }
 }

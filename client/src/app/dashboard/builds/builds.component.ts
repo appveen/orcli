@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService, APIOptions } from 'src/app/api.service';
+import { SocketService } from 'src/app/socket.service';
 
 @Component({
   selector: 'app-builds',
@@ -14,7 +15,8 @@ export class BuildsComponent implements OnInit {
   apiOptions: APIOptions;
   constructor(
     private api: ApiService,
-    private toastr: ToastrService) {
+    private toastr: ToastrService,
+    private socketService: SocketService) {
     const self = this;
     self.buildList = [];
     self.apiOptions = {
@@ -26,6 +28,11 @@ export class BuildsComponent implements OnInit {
   ngOnInit(): void {
     const self = this;
     self.fetchBuilds();
+    self.socketService.logs.subscribe(data => {
+      if (self.selectedLog && self.selectedLog._id === data._id) {
+        self.selectedLog.logs += data.logs;
+      }
+    });
   }
 
   fetchBuilds() {

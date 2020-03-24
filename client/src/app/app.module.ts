@@ -17,6 +17,7 @@ import { HomeComponent } from './dashboard/home/home.component';
 import { ReleaseComponent } from './dashboard/release/release.component';
 import { BuildsComponent } from './dashboard/builds/builds.component';
 import { TasksComponent } from './dashboard/tasks/tasks.component';
+import { SocketService } from './socket.service';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { TasksComponent } from './dashboard/tasks/tasks.component';
   providers: [
     ApiService,
     DataService,
-    ToastrService
+    ToastrService,
+    SocketService
   ],
   bootstrap: [AppComponent]
 })
