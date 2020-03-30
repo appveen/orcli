@@ -47,6 +47,16 @@ function hotfixScript(answers) {
     script.push(`echo "${chalk.green(`PROCESS STARTED FOR :: ${repo.name}`)}"`);
     script.push(`echo "${chalk.green('***********************************')}"`);
     buildImage(repo, answers, script);
+    if (answers.upload) {
+        script.push(`echo "${chalk.green('***********************************')}"`);
+        script.push(`echo "${chalk.green(`UPLOADING TO E-DELIVERY :: ${repo.name}`)}"`);
+        script.push(`echo "${chalk.green('***********************************')}"`);
+        script.push(`cd ${answers.saveLocation}`);
+        script.push(`rsync -Pav -e "ssh -i $HOME/edelivery-key"  ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${answers.branch}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/odp_${repo.short.toLowerCase()}.$TAG.tar.bz2`);
+        script.push(`echo "${chalk.green('***********************************')}"`);
+        script.push(`echo "${chalk.green(`UPLOADING TO E-DELIVERY :: ${repo.name}`)}"`);
+        script.push(`echo "${chalk.green('***********************************')}"`);
+    }
     script.push(`echo "${chalk.green('***********************************')}"`);
     script.push(`echo "${chalk.green(`PROCESS ENDED FOR :: ${repo.name}`)}"`);
     script.push(`echo "${chalk.green('***********************************')}"`);
