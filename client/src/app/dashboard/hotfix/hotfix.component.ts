@@ -42,15 +42,27 @@ export class HotfixComponent implements OnInit {
     self.form.get('deploy').valueChanges.subscribe(flag => {
       if (flag) {
         self.form.addControl('namespace', new FormControl(null, [Validators.required, Validators.minLength(3), Validators.maxLength(28)]));
+        self.form.get('upload').disable({
+          emitEvent: false
+        });
       } else {
         self.form.removeControl('namespace');
+        self.form.get('upload').enable({
+          emitEvent: false
+        });
       }
     });
     self.form.get('upload').valueChanges.subscribe(flag => {
       if (flag) {
+        self.form.get('deploy').disable({
+          emitEvent: false
+        });
         self.form.addControl('code', new FormControl(null, [Validators.required, Validators.minLength(6), Validators.maxLength(6)]));
       } else {
         self.form.removeControl('code');
+        self.form.get('deploy').enable({
+          emitEvent: false
+        });
       }
     });
   }
