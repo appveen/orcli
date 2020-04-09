@@ -103,7 +103,8 @@ router.post('/hotfix', (req, res) => {
                         const status = await buildsModel.findByIdAndUpdate(lastID, newData);
                     } else {
                         const newData = {
-                            status: 'Success'
+                            status: 'Success',
+                            ended: Date.now()
                         };
                         socket.emit('buildStatus', {
                             _id: lastID,
@@ -114,7 +115,8 @@ router.post('/hotfix', (req, res) => {
                 }, async (err) => {
                     console.log('Build Failed', err);
                     const newData = {
-                        status: 'Failed'
+                        status: 'Failed',
+                        ended: Date.now()
                     };
                     const status = await buildsModel.findByIdAndUpdate(lastID, newData);
                 });
