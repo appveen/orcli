@@ -3,6 +3,7 @@ const path = require('path');
 const express = require('express');
 const http = require('http');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const log4js = require('log4js');
 const socket = require('socket.io');
 
@@ -17,6 +18,7 @@ const io = socket(server, { path: '/socket' });
 global.socket = io;
 global.dbPath = path.join(__dirname, 'db');
 global.secret = 'itworks@123123123';
+global.cookieName = 'orcli-session';
 
 if (!fs.existsSync(global.dbPath)) {
     fs.mkdirSync(global.dbPath);
@@ -29,6 +31,7 @@ log4js.configure({
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 app.use((req, res, next) => {
     logger.info(req.method, req.headers['x-forwarded-for'] || req.connection.remoteAddress, req.path);
@@ -36,7 +39,10 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-    const token = req.headers.authorization;
+    let token = req.headers.authorization;
+    if (!token) {
+        token = req.cookies[global.cookieName];
+    }
     if (req.path.indexOf('/auth') > -1) {
         next();
     } else if (req.path.indexOf('/orcli') > -1 && token && token === 'ORCLI') {
