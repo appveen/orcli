@@ -45,7 +45,7 @@ app.use((req, res, next) => {
     }
     if (req.path.indexOf('/auth') > -1) {
         next();
-    } else if (req.path.indexOf('/orcli') > -1 && token && token === 'ORCLI') {
+    } else if (token && token === 'ORCLI') {
         next();
     } else {
         res.status(401).json({
