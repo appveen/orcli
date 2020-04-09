@@ -5,12 +5,14 @@ const dateformat = require('dateformat');
 const router = require('express').Router();
 const log4js = require('log4js');
 const jsonfile = require('jsonfile');
+const speakeasy = require('speakeasy');
 
 const buildsModel = require('../models/builds.model');
 const prepareScript = require('../utils/prepare-script');
 const shell = require('../utils/shell');
 
 const socket = global.socket;
+const secret = global.secret;
 
 /**
  * @type {[{name:string,url:string,node:boolean,short:string,dependency:string[]}]}
@@ -51,6 +53,22 @@ router.post('/hotfix', (req, res) => {
                 payload.workspace = path.join(payload.workspace, payload.release);
             } else {
                 payload.workspace = path.join(payload.workspace, payload.branch);
+            }
+            if (payload.upload) {
+                if (!payload.code) {
+                    return res.status(400).json({
+                        message: 'Code required to upload into E-Delivery'
+                    });
+                }
+                if (!speakeasy.totp.verify({
+                    secret: secret,
+                    token: payload.code,
+                    window: 1
+                })) {
+                    return res.status(400).json({
+                        message: 'Invalid Code'
+                    });
+                }
             }
             const date = new Date();
             payload.saveLocation = path.join(payload.workspace, 'images', dateformat(date, 'yyyy_mm_dd'));

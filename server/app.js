@@ -16,6 +16,7 @@ const io = socket(server, { path: '/socket' });
 
 global.socket = io;
 global.dbPath = path.join(__dirname, 'db');
+global.secret = 'itworks@123123123';
 
 if (!fs.existsSync(global.dbPath)) {
     fs.mkdirSync(global.dbPath);
@@ -34,18 +35,18 @@ app.use((req, res, next) => {
     next();
 });
 
-// app.use((req, res, next) => {
-//     const token = req.headers.authorization;
-//     if (req.path.indexOf('/auth') > -1) {
-//         next();
-//     } else if (req.path.indexOf('/orcli') > -1 && token && token === 'ORCLI') {
-//         next();
-//     } else {
-//         res.status(401).json({
-//             message: 'Unauthorised'
-//         });
-//     }
-// });
+app.use((req, res, next) => {
+    const token = req.headers.authorization;
+    if (req.path.indexOf('/auth') > -1) {
+        next();
+    } else if (req.path.indexOf('/orcli') > -1 && token && token === 'ORCLI') {
+        next();
+    } else {
+        res.status(401).json({
+            message: 'Unauthorised'
+        });
+    }
+});
 
 app.use('/api', require('./controllers'));
 

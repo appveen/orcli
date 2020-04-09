@@ -20,6 +20,7 @@
     "rxjs": "^6.5.4",
     "shelljs": "^0.8.3",
     "socket.io": "^2.3.0",
+    "speakeasy": "^2.0.0",
     "sqlite3": "^4.1.1"
   },
   "bin": "./index.js"
