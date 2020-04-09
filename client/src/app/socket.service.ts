@@ -9,9 +9,11 @@ export class SocketService {
 
   socket: SocketIOClient.Socket;
   logs: EventEmitter<string>;
+  buildStatus: EventEmitter<string>;
   constructor() {
     const self = this;
     self.logs = new EventEmitter();
+    self.buildStatus = new EventEmitter();
   }
 
   connect() {
@@ -21,6 +23,9 @@ export class SocketService {
     });
     self.socket.on('logs', function (data) {
       self.logs.emit(data);
+    });
+    self.socket.on('buildStatus', function (data) {
+      self.buildStatus.emit(data);
     });
   }
 }

@@ -87,6 +87,10 @@ router.post('/hotfix', (req, res) => {
                         const newData = {
                             status: 'Success'
                         };
+                        socket.emit('buildStatus', {
+                            _id: lastID,
+                            status: 'Success'
+                        });
                         const status = await buildsModel.findByIdAndUpdate(lastID, newData);
                     }
                 }, async (err) => {
