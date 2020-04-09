@@ -105,7 +105,7 @@ function buildImage(repo, answers, script) {
     script.push(`\t cd ${repo.name}`);
     script.push(`\t git checkout ${answers.branch}`);
     script.push(`fi`);
-    script.push(`echo \`date\` > ../LAST_PULL_${repo.name.toUpperCase()}`);
+    script.push(`echo \`date -Is\` > ../LAST_PULL_${repo.name.toUpperCase()}`);
     script.push(`export WORKSPACE=${path.join(answers.workspace, repo.name)}`);
     script.push(`if [ -f ${repo.short.toLowerCase()}.yaml ]; then`);
     script.push(`\t rm -rf ${yamlPath}`);
