@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const log4js = require('log4js');
 const socket = require('socket.io');
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 const LOG_LEVEL = process.env.LOG_LEVEL || 'info';
 
 const logger = log4js.getLogger('server');
