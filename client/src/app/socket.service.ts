@@ -13,7 +13,10 @@ export class SocketService {
   constructor() {
     const self = this;
     self.logs = new EventEmitter();
-    self.socket = io('/', { path: '/socket' });
+    self.socket = io.connect('/', {
+      path: '/socket',
+      secure: true
+    });
     self.socket.on('logs', function (data) {
       self.logs.emit(data);
     });
