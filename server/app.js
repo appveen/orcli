@@ -12,7 +12,7 @@ const LOG_LEVEL = process.env.LOG_LEVEL || 'info';
 const logger = log4js.getLogger('server');
 const app = express();
 const server = http.createServer(app);
-const io = socket(server);
+const io = socket(server, { path: '/socket' });
 
 global.socket = io;
 global.dbPath = path.join(__dirname, 'db');

@@ -53,7 +53,10 @@
 <div class="logs-modal position-fixed bg-white border-left position-relative" [ngClass]="{'show': selectedLog}">
   <div class="header d-flex align-items-center justify-content-between bg-secondary text-white p-2">
     <span class="font-weight-bold">Logs</span>
-    <button type="button" class="btn btn-link text-white" (click)="selectedLog=null;">Close</button>
+    <div class="d-flex align-items-center">
+      <button type="button" class="btn btn-link text-white mr-3" (click)="refresh()">Refresh</button>
+      <button type="button" class="btn btn-link text-white" (click)="selectedLog=null;">Close</button>
+    </div>
   </div>
   <pre class="logs p-2">{{selectedLog?.logs}}</pre>
   <div *ngIf="selectedLog?.status=='Processing'" class="logs-spinner position-absolute">

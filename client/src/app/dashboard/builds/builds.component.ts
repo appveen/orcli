@@ -43,4 +43,13 @@ export class BuildsComponent implements OnInit {
       self.toastr.error(err.error.message);
     });
   }
+
+  refresh() {
+    const self = this;
+    self.api.get('builds', '/' + self.selectedLog._id).subscribe((res: any) => {
+      self.selectedLog = res;
+    }, err => {
+      self.toastr.error(err.error.message);
+    });
+  }
 }
