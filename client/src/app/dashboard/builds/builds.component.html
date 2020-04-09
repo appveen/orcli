@@ -16,7 +16,9 @@
         <td>{{item._id}}</td>
         <td>{{item.repo}}</td>
         <td>{{item.branch}}</td>
-        <td>{{item.status}}</td>
+        <td [ngClass]="{'text-success':item.status=='Success','text-warning':item.status=='Processing'}">
+          {{item.status}}
+        </td>
         <td>{{item.started | date:'yyy-MM-dd HH:mm:ss'}}</td>
         <td>{{item.ended | date:'yyy-MM-dd HH:mm:ss'}}</td>
         <td>{{item.tag}}</td>

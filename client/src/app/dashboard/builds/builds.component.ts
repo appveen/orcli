@@ -33,6 +33,11 @@ export class BuildsComponent implements OnInit {
         self.selectedLog.logs += data.logs;
       }
     });
+    self.socketService.buildStatus.subscribe(data => {
+      if (self.selectedLog && self.selectedLog._id === data._id) {
+        self.selectedLog.status += data.status;
+      }
+    });
   }
 
   fetchBuilds() {
