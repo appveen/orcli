@@ -28,4 +28,9 @@ export class SocketService {
       self.buildStatus.emit(data);
     });
   }
+
+  disconnect() {
+    const self = this;
+    self.socket.disconnect();
+  }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SocketService } from '../socket.service';
 
 @Component({
@@ -6,7 +6,7 @@ import { SocketService } from '../socket.service';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
 
   constructor(private socketService: SocketService) { }
 
@@ -15,4 +15,8 @@ export class DashboardComponent implements OnInit {
     self.socketService.connect();
   }
 
+  ngOnDestroy() {
+    const self = this;
+    self.socketService.disconnect();
+  }
 }
