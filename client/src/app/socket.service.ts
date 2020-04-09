@@ -1,5 +1,4 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { Observable } from 'rxjs';
 import * as io from 'socket.io-client';
 
 
@@ -13,9 +12,12 @@ export class SocketService {
   constructor() {
     const self = this;
     self.logs = new EventEmitter();
-    self.socket = io.connect('/', {
-      path: '/socket',
-      secure: true
+  }
+
+  connect() {
+    const self = this;
+    self.socket = io('/', {
+      path: '/socket'
     });
     self.socket.on('logs', function (data) {
       self.logs.emit(data);
