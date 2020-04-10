@@ -21,7 +21,8 @@ export class BuildsComponent implements OnInit {
     self.buildList = [];
     self.apiOptions = {
       page: 1,
-      count: 30
+      count: 30,
+      sort: '-started'
     };
   }
 
