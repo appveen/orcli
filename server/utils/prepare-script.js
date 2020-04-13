@@ -71,6 +71,9 @@ function hotfixScript(answers) {
  * @param {*} answers 
  */
 function buildImage(repo, answers, script) {
+    if (!repo.short) {
+        repo.short = '';
+    }
     const ODP_RELEASE = answers.patch || answers.branch;
     const yamlFile = `${repo.short.toLowerCase()}.${ODP_RELEASE}-hotfix-${answers.hotfix}.yaml`;
     const yamlPath = path.join(answers.saveLocation, 'yamls', yamlFile);
@@ -78,9 +81,6 @@ function buildImage(repo, answers, script) {
     const tarName = `odp_${repo.short.toLowerCase()}.${ODP_RELEASE}-hotfix-${answers.hotfix}.tar`;
     if (repo.short && answers.cleanBuild) {
         script.push(`touch CLEAN_BUILD_${repo.short}`);
-    }
-    if (!repo.short) {
-        repo.short = '';
     }
     script.push(`cd ${answers.workspace}`);
     // script.push(`echo ${repo.key} > ${repo.name.toUpperCase()}-KEY`);
@@ -116,7 +116,7 @@ function buildImage(repo, answers, script) {
     script.push(`fi`);
     script.push(`TAG=${ODP_RELEASE}-hotfix-${answers.hotfix}"_"$cDate`);
     script.push(`if [ -f scripts/build_image.sh ]; then`);
-    if (answers.deploy) {
+    if (answers.deploy && repo.short) {
         script.push(`\t sh scripts/build_image.sh ${ODP_RELEASE} hotfix-${answers.hotfix}"_"$cDate`);
     } else {
         script.push(`\t sh scripts/build_image.sh ${ODP_RELEASE} hotfix-${answers.hotfix}`);
@@ -127,7 +127,7 @@ function buildImage(repo, answers, script) {
     script.push(`\t\t rm -rf ${tarName}.bz2`);
     script.push(`\t\t docker save -o ${tarName} ${imageName}`);
     script.push(`\t\t bzip2 ${tarName}`);
-    if (answers.deploy) {
+    if (answers.deploy && repo.short) {
         script.push(`\t\t kubectl set image deployment/${repo.short.toLowerCase()} ${repo.short.toLowerCase()}=odp:${repo.short.toLowerCase()}.$TAG -n ${answers.namespace} --record=true`);
     }
     script.push(`\t fi`);
