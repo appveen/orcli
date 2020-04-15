@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService, APIOptions } from 'src/app/api.service';
 import { SocketService } from 'src/app/socket.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-builds',
@@ -10,13 +11,15 @@ import { SocketService } from 'src/app/socket.service';
 })
 export class BuildsComponent implements OnInit {
 
+  @ViewChild('consoleWindow', { static: false }) consoleWindow: ElementRef<HTMLElement>;
   selectedLog: any;
   buildList: Array<any>;
   apiOptions: APIOptions;
   constructor(
     private api: ApiService,
     private toastr: ToastrService,
-    private socketService: SocketService) {
+    private socketService: SocketService,
+    private domSanitizer: DomSanitizer) {
     const self = this;
     self.buildList = [];
     self.apiOptions = {
@@ -32,6 +35,13 @@ export class BuildsComponent implements OnInit {
     self.socketService.logs.subscribe(data => {
       if (self.selectedLog && self.selectedLog._id === data._id) {
         self.selectedLog.logs += data.logs;
+        if (self.consoleWindow && self.consoleWindow.nativeElement) {
+          setTimeout(() => {
+            self.consoleWindow.nativeElement.scrollTo({
+              top: self.consoleWindow.nativeElement.scrollHeight
+            });
+          }, 50);
+        }
       }
     });
     self.socketService.buildStatus.subscribe(data => {
@@ -43,7 +53,7 @@ export class BuildsComponent implements OnInit {
 
   fetchBuilds() {
     const self = this;
-    self.api.get('builds', '/', self.apiOptions).subscribe((res: any) => {
+    self.api.get('builds', '/', self.apiOptions).subscribe((res: Array<any>) => {
       self.buildList = res;
     }, err => {
       self.toastr.error(err.error.message);
@@ -57,5 +67,12 @@ export class BuildsComponent implements OnInit {
     }, err => {
       self.toastr.error(err.error.message);
     });
+  }
+
+  get logs() {
+    const self = this;
+    if (self.selectedLog) {
+      return self.domSanitizer.bypassSecurityTrustHtml(self.selectedLog.logs);
+    }
   }
 }

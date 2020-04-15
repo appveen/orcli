@@ -1,7 +1,9 @@
 const router = require('express').Router();
 const log4js = require('log4js');
+const Convert = require('ansi-to-html');
 const buildsModel = require('../models/builds.model');
 
+const convert = new Convert();
 const logger = log4js.getLogger('builds.controller');
 
 router.get('/', (req, res) => {
@@ -23,6 +25,9 @@ router.get('/', (req, res) => {
                 return res.status(200).json(count);
             }
             const docs = await buildsModel.find(req.query);
+            docs.forEach(doc=>{
+                doc.logs = convert.toHtml(doc.logs);
+            });
             res.status(200).json(docs);
         } catch (e) {
             if (typeof e === 'string') {
@@ -48,6 +53,7 @@ router.get('/:id', (req, res) => {
                     message: 'Data Model Not Found'
                 });
             }
+            doc.logs = convert.toHtml(doc.logs);
             res.status(200).json(doc);
         } catch (e) {
             if (typeof e === 'string') {

@@ -6,11 +6,15 @@ const router = require('express').Router();
 const log4js = require('log4js');
 const jsonfile = require('jsonfile');
 const speakeasy = require('speakeasy');
+const async = require('async');
+const Convert = require('ansi-to-html');
 
 const buildsModel = require('../models/builds.model');
 const prepareScript = require('../utils/prepare-script');
 const shell = require('../utils/shell');
 
+const convert = new Convert();
+const pushLogs = async.priorityQueue(pushLogsHandler);
 const socket = global.socket;
 const secret = global.secret;
 
@@ -94,14 +98,19 @@ router.post('/hotfix', (req, res) => {
                 const lastID = status.lastID;
                 shell.execute('sh ' + filepath).subscribe(async (data) => {
                     if (data) {
+                        const htmlData = convert.toHtml(data);
                         socket.emit('logs', {
                             _id: lastID,
-                            logs: data
+                            logs: htmlData
                         });
                         const newData = {};
                         const bd = await buildsModel.findById(lastID);
-                        newData.logs = bd.logs + data;
-                        const status = await buildsModel.findByIdAndUpdate(lastID, newData);
+                        newData.logs = (bd.logs || '') + data;
+                        pushLogs.push({
+                            _id: lastID,
+                            data: { logs: newData.logs }
+                        });
+                        // const status = await buildsModel.findByIdAndUpdate(lastID, newData);
                     } else {
                         const newData = {
                             status: 'Success'
@@ -110,14 +119,22 @@ router.post('/hotfix', (req, res) => {
                             _id: lastID,
                             status: 'Success'
                         });
-                        const status = await buildsModel.findByIdAndUpdate(lastID, newData);
+                        pushLogs.push({
+                            _id: lastID,
+                            data: { status: 'Success' }
+                        });
+                        // const status = await buildsModel.findByIdAndUpdate(lastID, newData);
                     }
                 }, async (err) => {
                     console.log('Build Failed', err);
                     const newData = {
                         status: 'Failed'
                     };
-                    const status = await buildsModel.findByIdAndUpdate(lastID, newData);
+                    pushLogs.push({
+                        _id: lastID,
+                        data: { status: 'Failed' }
+                    });
+                    // const status = await buildsModel.findByIdAndUpdate(lastID, newData);
                 });
             }).catch(err => {
                 logger.error(err);
@@ -139,5 +156,17 @@ router.post('/hotfix', (req, res) => {
         });
     })
 });
+
+
+async function pushLogsHandler(obj, callback) {
+    const _id = obj._id;
+    const data = obj.data;
+    try {
+        const status = await buildsModel.findByIdAndUpdate(_id, data);
+    } catch (e) {
+        logger.error('pushLogsHandler', e);
+    }
+    callback();
+}
 
 module.exports = router;

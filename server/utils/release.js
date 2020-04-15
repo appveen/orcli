@@ -7,7 +7,7 @@ const jsonfile = require('jsonfile');
 /**
  * @type {[{name:string,url:string,node:boolean,short:string,dependency:string[]}]}
  */
-const repoList = jsonfile.readFileSync(path.join(__dirname, 'repo-list.json'));
+const repoList = jsonfile.readFileSync(path.join(process.cwd(), 'repo-list.json'));
 
 function trigger(answers) {
     shell.rm('-rf', 'ODP_RELEASE');

@@ -35,8 +35,8 @@ if (!process.env.M2_HOME) {
     process.exit();
 }
 
-const repoFileLocation = path.join(__dirname, 'repo-list.json');
-const configFileLocation = path.join(__dirname, 'config.json');
+const repoFileLocation = path.join(process.cwd(), 'repo-list.json');
+const configFileLocation = path.join(process.cwd(), 'config.json');
 
 if (!fs.existsSync(configFileLocation)) {
     fs.writeFileSync(configFileLocation, '{"repoAccess":{ "username":"", "password":""},"workspace":""}', 'utf8');
