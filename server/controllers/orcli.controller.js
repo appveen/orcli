@@ -1,6 +1,7 @@
 const os = require('os');
 const fs = require('fs');
 const path = require('path');
+const querystring = require('querystring');
 const dateformat = require('dateformat');
 const router = require('express').Router();
 const log4js = require('log4js');
@@ -105,7 +106,8 @@ router.post('/hotfix', (req, res) => {
                         });
                         const newData = {};
                         const bd = await buildsModel.findById(lastID);
-                        newData.logs = (bd.logs || '') + data;
+                        newData.logs = unescape((bd.logs || '')) + data;
+                        newData.logs = escape(newData.logs);
                         pushLogs.push({
                             _id: lastID,
                             data: { logs: newData.logs }

@@ -26,7 +26,7 @@ router.get('/', (req, res) => {
             }
             const docs = await buildsModel.find(req.query);
             docs.forEach(doc=>{
-                doc.logs = convert.toHtml(doc.logs);
+                doc.logs = convert.toHtml(unescape(doc.logs));
             });
             res.status(200).json(docs);
         } catch (e) {
@@ -53,7 +53,7 @@ router.get('/:id', (req, res) => {
                     message: 'Data Model Not Found'
                 });
             }
-            doc.logs = convert.toHtml(doc.logs);
+            doc.logs = convert.toHtml(unescape(doc.logs));
             res.status(200).json(doc);
         } catch (e) {
             if (typeof e === 'string') {
