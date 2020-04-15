@@ -125,7 +125,6 @@ router.post('/hotfix', (req, res) => {
                             _id: lastID,
                             data: {
                                 status: 'Success',
-                                ended: Date.now()
                             }
                         });
                         // const status = await buildsModel.findByIdAndUpdate(lastID, newData);
@@ -134,7 +133,6 @@ router.post('/hotfix', (req, res) => {
                     console.log('Build Failed', err);
                     const newData = {
                         status: 'Failed',
-                        ended: Date.now()
                     };
                     pushLogs.push({
                         _id: lastID,
