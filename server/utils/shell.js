@@ -1,4 +1,5 @@
 const { exec } = require('child_process');
+const { execSync } = require('child_process');
 const { Observable } = require('rxjs');
 
 /**
@@ -33,5 +34,13 @@ function execute(command) {
     });
 }
 
+/**
+ * 
+ * @param {string} command 
+ */
+function executeSync(command) {
+    return execSync(command);
+}
 
 module.exports.execute = execute;
+module.exports.executeSync = executeSync;

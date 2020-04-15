@@ -78,6 +78,7 @@ router.post('/hotfix', (req, res) => {
             fs.writeFileSync(filepath, script, {
                 encoding: 'utf-8'
             });
+            shell.executeSync('chmod +x ' + filepath);
             const repo = repoList.find(e => e.name === payload.repo);
             const buildData = {};
             buildData.repo = payload.repo;
