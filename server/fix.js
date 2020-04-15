@@ -1,12 +1,21 @@
+const path = require('path');
+
+global.dbPath = path.join(__dirname, 'db');
+
 const buildsModel = require('./models/builds.model');
 
 
 const arr = [];
 buildsModel.find({
-    select: '_id,status',
-    filter: { status: 'Processing' }
+    select: '_id, status',
+    filter: 'status="Processing"'
 }).then(docs => {
-    arr.push(buildsModel.findByIdAndUpdate(docs._id, { status: 'Success' }));
+    docs.forEach(doc => {
+        console.log(doc);
+        arr.push(buildsModel.findByIdAndUpdate(doc._id, { status: 'Success' }));
+    });
+}).catch(err => {
+    console.error(err);
 });
 
 Promise.all(arr).then(allStatus => {
