@@ -97,7 +97,7 @@ router.post('/hotfix', (req, res) => {
             buildsModel.create(buildData).then(status => {
                 logger.info('Build Logged', status.lastID);
                 const lastID = status.lastID;
-                shell.execute(filepath).subscribe(async (data) => {
+                shell.execute('sh ' + filepath).subscribe(async (data) => {
                     if (data) {
                         const htmlData = convert.toHtml(data);
                         socket.emit('logs', {
@@ -124,7 +124,7 @@ router.post('/hotfix', (req, res) => {
                         pushLogs.push({
                             _id: lastID,
                             data: {
-                                status: 'Success',
+                                status: 'Success'
                             }
                         });
                         // const status = await buildsModel.findByIdAndUpdate(lastID, newData);
@@ -132,7 +132,7 @@ router.post('/hotfix', (req, res) => {
                 }, async (err) => {
                     console.log('Build Failed', err);
                     const newData = {
-                        status: 'Failed',
+                        status: 'Failed'
                     };
                     pushLogs.push({
                         _id: lastID,
