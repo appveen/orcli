@@ -55,7 +55,7 @@ function hotfixScript(answers) {
         script.push(`rsync -Pav -e "ssh -i /home/ubuntu/edelivery-key" odp_${repo.short.toLowerCase()}.$TAG.tar.bz2 ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${answers.branch}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/`);
         script.push(`rsync -Pav -e "ssh -i /home/ubuntu/edelivery-key" yamls/${repo.short.toLowerCase()}.$TAG.yaml ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${answers.branch}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/.`);
         script.push(`echo "${chalk.green('***********************************')}"`);
-        script.push(`echo "${chalk.green(`UPLOADING TO E-DELIVERY :: ${repo.name}`)}"`);
+        script.push(`echo "${chalk.green(`UPLOADED TO E-DELIVERY :: ${repo.name}`)}"`);
         script.push(`echo "${chalk.green('***********************************')}"`);
     }
     script.push(`echo "${chalk.green('***********************************')}"`);
@@ -86,33 +86,33 @@ function buildImage(repo, answers, script) {
     // script.push(`echo ${repo.key} > ${repo.name.toUpperCase()}-KEY`);
     // script.push(`chmod 600 ${repo.name.toUpperCase()}-KEY`);
     script.push(`if [ -d ${repo.name} ]; then`);
-    script.push(`\t lastPull=$(<LAST_PULL_${repo.name.toUpperCase()})`);
-    script.push(`\t cd ${repo.name}`);
-    // script.push(`\t export WORKSPACE=$cwd`);
-    script.push(`\t git stash`);
-    script.push(`\t git checkout ${answers.branch}`);
-    // script.push(`\t ssh-agent bash -c 'ssh-add ../${repo.name.toUpperCase()}-KEY; git pull origin ${answers.branch}'`);
-    script.push(`\t git pull origin ${answers.branch}`);
-    script.push(`\t echo "${chalk.green('***********************************')}"`);
-    script.push(`\t echo "${chalk.green('Changes found')}"`);
-    script.push(`\t echo "${chalk.green('***********************************')}"`);
-    script.push(`\t if [ $lastPull ]; then`);
-    script.push(`\t\t git log --pretty=oneline --since=$lastPull`);
-    script.push(`\t fi`);
-    script.push(`\t echo "${chalk.green('***********************************')}"`);
+    script.push(`\tlastPull=$(<LAST_PULL_${repo.name.toUpperCase()})`);
+    script.push(`\tcd ${repo.name}`);
+    // script.push(`\texport WORKSPACE=$cwd`);
+    script.push(`\tgit stash`);
+    script.push(`\tgit checkout ${answers.branch}`);
+    // script.push(`\tssh-agent bash -c 'ssh-add ../${repo.name.toUpperCase()}-KEY; git pull origin ${answers.branch}'`);
+    script.push(`\tgit pull origin ${answers.branch}`);
+    script.push(`\techo "${chalk.green('***********************************')}"`);
+    script.push(`\techo "${chalk.green('Changes found')}"`);
+    script.push(`\techo "${chalk.green('***********************************')}"`);
+    script.push(`\tif [ $lastPull ]; then`);
+    script.push(`\t\tgit log --pretty=oneline --since=$lastPull`);
+    script.push(`\tfi`);
+    script.push(`\techo "${chalk.green('***********************************')}"`);
     script.push(`else`);
-    // script.push(`\t ssh-agent bash -c 'ssh-add ./${repo.name.toUpperCase()}-KEY; git clone ${repo.url}'`);
-    script.push(`\t git clone ${repo.url}`);
-    script.push(`\t cd ${repo.name}`);
-    script.push(`\t git checkout ${answers.branch}`);
+    // script.push(`\tssh-agent bash -c 'ssh-add ./${repo.name.toUpperCase()}-KEY; git clone ${repo.url}'`);
+    script.push(`\tgit clone ${repo.url}`);
+    script.push(`\tcd ${repo.name}`);
+    script.push(`\tgit checkout ${answers.branch}`);
     script.push(`fi`);
     script.push(`echo \`date -Is\` > ../LAST_PULL_${repo.name.toUpperCase()}`);
     script.push(`export WORKSPACE=${path.join(answers.workspace, repo.name)}`);
     script.push(`if [ -f ${repo.short.toLowerCase()}.yaml ]; then`);
-    script.push(`\t rm -rf ${yamlPath}`);
-    script.push(`\t cp ${repo.short.toLowerCase()}.yaml ${yamlPath}`);
-    script.push(`\t sed -i.bak s/__release_tag__/"'${ODP_RELEASE}'"/  ${yamlPath}`);
-    script.push(`\t sed -i.bak s#__release__#${ODP_RELEASE}-hotfix-${answers.hotfix}#  ${yamlPath}`);
+    script.push(`\trm -rf ${yamlPath}`);
+    script.push(`\tcp ${repo.short.toLowerCase()}.yaml ${yamlPath}`);
+    script.push(`\tsed -i.bak s/__release_tag__/"'${ODP_RELEASE}'"/  ${yamlPath}`);
+    script.push(`\tsed -i.bak s#__release__#${ODP_RELEASE}-hotfix-${answers.hotfix}#  ${yamlPath}`);
     script.push(`fi`);
     if (answers.deploy && repo.short) {
         script.push(`TAG=${ODP_RELEASE}-hotfix-${answers.hotfix}"_"$cDate`);
@@ -121,30 +121,30 @@ function buildImage(repo, answers, script) {
     }
     script.push(`if [ -f scripts/build_image.sh ]; then`);
     if (answers.deploy && repo.short) {
-        script.push(`\t sh scripts/build_image.sh ${ODP_RELEASE} hotfix-${answers.hotfix}"_"$cDate`);
+        script.push(`\tsh scripts/build_image.sh ${ODP_RELEASE} hotfix-${answers.hotfix}"_"$cDate`);
     } else {
-        script.push(`\t sh scripts/build_image.sh ${ODP_RELEASE} hotfix-${answers.hotfix}`);
+        script.push(`\tsh scripts/build_image.sh ${ODP_RELEASE} hotfix-${answers.hotfix}`);
     }
-    script.push(`\t if [ -f ${repo.short.toLowerCase()}.yaml ]; then`);
-    script.push(`\t\t cd ${answers.saveLocation}`);
-    script.push(`\t\t rm -rf ${tarName}`);
-    script.push(`\t\t rm -rf ${tarName}.bz2`);
-    script.push(`\t\t docker save -o ${tarName} ${imageName}`);
-    script.push(`\t\t bzip2 ${tarName}`);
+    script.push(`\tif [ -f ${repo.short.toLowerCase()}.yaml ]; then`);
+    script.push(`\t\tcd ${answers.saveLocation}`);
+    script.push(`\t\trm -rf ${tarName}`);
+    script.push(`\t\trm -rf ${tarName}.bz2`);
+    script.push(`\t\tdocker save -o ${tarName} ${imageName}`);
+    script.push(`\t\tbzip2 ${tarName}`);
     if (answers.deploy && repo.short) {
-        script.push(`\t\t kubectl set image deployment/${repo.short.toLowerCase()} ${repo.short.toLowerCase()}=odp:${repo.short.toLowerCase()}.$TAG -n ${answers.namespace} --record=true`);
+        script.push(`\t\tkubectl set image deployment/${repo.short.toLowerCase()} ${repo.short.toLowerCase()}=odp:${repo.short.toLowerCase()}.$TAG -n ${answers.namespace} --record=true`);
     }
-    script.push(`\t fi`);
+    script.push(`\tfi`);
     script.push(`else`);
-    script.push(`\t if [ -f scripts/build_jar.sh ]; then`);
-    script.push(`\t\t sh scripts/build_jar.sh`);
-    script.push(`\t fi`);
-    script.push(`\t if [ -f scripts/setup.sh ]; then`);
-    script.push(`\t\t sh scripts/setup.sh`);
-    script.push(`\t fi`);
-    script.push(`\t if [ -f scripts/build_executables.sh ]; then`);
-    script.push(`\t\t sh scripts/build_executables.sh`);
-    script.push(`\t fi`);
+    script.push(`\tif [ -f scripts/build_jar.sh ]; then`);
+    script.push(`\t\tsh scripts/build_jar.sh`);
+    script.push(`\tfi`);
+    script.push(`\tif [ -f scripts/setup.sh ]; then`);
+    script.push(`\t\tsh scripts/setup.sh`);
+    script.push(`\tfi`);
+    script.push(`\tif [ -f scripts/build_executables.sh ]; then`);
+    script.push(`\t\tsh scripts/build_executables.sh`);
+    script.push(`\tfi`);
     script.push(`fi`);
 }
 
