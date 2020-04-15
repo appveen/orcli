@@ -124,12 +124,14 @@ function buildImage(repo, answers, script) {
     } else {
         script.push(`\tsh scripts/build_image.sh ${ODP_RELEASE} hotfix-${answers.hotfix}`);
     }
-    script.push(`\tif [ -f ${repo.short.toLowerCase()}.yaml ]; then`);
-    script.push(`\t\tcd ${answers.saveLocation}`);
-    script.push(`\t\trm -rf ${tarName}`);
-    script.push(`\t\trm -rf ${tarName}.bz2`);
-    script.push(`\t\tdocker save -o ${tarName} ${imageName}`);
-    script.push(`\t\tbzip2 ${tarName}`);
+    if (!answers.deploy) {
+        script.push(`\tif [ -f ${repo.short.toLowerCase()}.yaml ]; then`);
+        script.push(`\t\tcd ${answers.saveLocation}`);
+        script.push(`\t\trm -rf ${tarName}`);
+        script.push(`\t\trm -rf ${tarName}.bz2`);
+        script.push(`\t\tdocker save -o ${tarName} ${imageName}`);
+        script.push(`\t\tbzip2 ${tarName}`);
+    }
     if (answers.deploy && repo.short) {
         script.push(`\t\tkubectl set image deployment/${repo.short.toLowerCase()} ${repo.short.toLowerCase()}=odp:${repo.short.toLowerCase()}.$TAG -n ${answers.namespace} --record=true`);
     }
