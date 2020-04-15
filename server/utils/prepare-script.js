@@ -11,7 +11,7 @@ function hotfixScript(answers) {
     const script = [];
     const ODP_RELEASE = answers.patch || answers.branch;
     script.push(`#!/bin/bash`);
-    script.push(`SET -e`);
+    // script.push(`SET -e`);
     script.push(`cDate=\`date +%Y.%m.%d.%H.%M\` #Current date and time`);
     script.push(`mkdir -p ${answers.workspace}`);
     script.push(`mkdir -p ${answers.saveLocation}`);
