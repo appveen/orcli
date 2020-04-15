@@ -1,6 +1,6 @@
 const path = require('path');
 
-global.dbPath = path.join(__dirname, 'db');
+global.dbPath = path.join(process.cwd(), 'db');
 
 const buildsModel = require('./models/builds.model');
 
