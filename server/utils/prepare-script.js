@@ -114,7 +114,11 @@ function buildImage(repo, answers, script) {
     script.push(`\t sed -i.bak s/__release_tag__/"'${ODP_RELEASE}'"/  ${yamlPath}`);
     script.push(`\t sed -i.bak s#__release__#${ODP_RELEASE}-hotfix-${answers.hotfix}#  ${yamlPath}`);
     script.push(`fi`);
-    script.push(`TAG=${ODP_RELEASE}-hotfix-${answers.hotfix}"_"$cDate`);
+    if (answers.deploy && repo.short) {
+        script.push(`TAG=${ODP_RELEASE}-hotfix-${answers.hotfix}"_"$cDate`);
+    } else {
+        script.push(`TAG=${ODP_RELEASE}-hotfix-${answers.hotfix}`);
+    }
     script.push(`if [ -f scripts/build_image.sh ]; then`);
     if (answers.deploy && repo.short) {
         script.push(`\t sh scripts/build_image.sh ${ODP_RELEASE} hotfix-${answers.hotfix}"_"$cDate`);
