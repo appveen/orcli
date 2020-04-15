@@ -52,8 +52,8 @@ function hotfixScript(answers) {
         script.push(`echo "${chalk.green(`UPLOADING TO E-DELIVERY :: ${repo.name}`)}"`);
         script.push(`echo "${chalk.green('***********************************')}"`);
         script.push(`cd ${answers.saveLocation}`);
-        script.push(`rsync -RPav -e "ssh -i /home/ubuntu/edelivery-key" odp_${repo.short.toLowerCase()}.$TAG.tar.bz2 ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${answers.branch}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/`);
-        script.push(`rsync -RPav -e "ssh -i /home/ubuntu/edelivery-key" yamls/${repo.short.toLowerCase()}.$TAG.yaml ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${answers.branch}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/`);
+        script.push(`rsync -Pav -e "ssh -i /home/ubuntu/edelivery-key" odp_${repo.short.toLowerCase()}.$TAG.tar.bz2 ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${answers.branch}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/`);
+        script.push(`rsync -Pav -e "ssh -i /home/ubuntu/edelivery-key" yamls/${repo.short.toLowerCase()}.$TAG.yaml ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${answers.branch}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/.`);
         script.push(`echo "${chalk.green('***********************************')}"`);
         script.push(`echo "${chalk.green(`UPLOADING TO E-DELIVERY :: ${repo.name}`)}"`);
         script.push(`echo "${chalk.green('***********************************')}"`);
