@@ -41,4 +41,11 @@ router.post('/login', (req, res) => {
     })
 });
 
+
+router.delete('/logout', (req, res) => {
+    res.cookie(global.cookieName, null, { maxAge: 0 });
+    res.status(200).json({
+        message: 'Logged out Successfully'
+    });
+});
 module.exports = router;
