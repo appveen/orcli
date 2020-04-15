@@ -97,7 +97,7 @@ router.post('/hotfix', (req, res) => {
             buildsModel.create(buildData).then(status => {
                 logger.info('Build Logged', status.lastID);
                 const lastID = status.lastID;
-                shell.execute('sh ' + filepath).subscribe(async (data) => {
+                shell.execute('./' + filepath).subscribe(async (data) => {
                     if (data) {
                         const htmlData = convert.toHtml(data);
                         socket.emit('logs', {
