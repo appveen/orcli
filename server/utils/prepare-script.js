@@ -31,35 +31,35 @@ function hotfixScript(answers) {
         for (let i = 0; i < repo.dependency.length; i++) {
             script.push(`cd ${answers.workspace}`);
             const dep = repo.dependency[i];
-            script.push(`echo -e "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
-            script.push(`echo -e "\\e[32m${chalk.bold.green(`BUILD STARTED FOR DEPENDENCY :: ${dep}`)}\\e[0m"`);
-            script.push(`echo -e "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
+            script.push(`echo "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
+            script.push(`echo "\\e[32m${chalk.bold.green(`BUILD STARTED FOR DEPENDENCY :: ${dep}`)}\\e[0m"`);
+            script.push(`echo "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
             const tempRepo = repoList.find(e => e.name === dep);
             buildImage(tempRepo, answers, script);
-            script.push(`echo -e "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
-            script.push(`echo -e "\\e[32m${chalk.bold.green(`BUILD ENDED FOR DEPENDENCY :: ${dep}`)}\\e[0m"`);
-            script.push(`echo -e "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
+            script.push(`echo "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
+            script.push(`echo "\\e[32m${chalk.bold.green(`BUILD ENDED FOR DEPENDENCY :: ${dep}`)}\\e[0m"`);
+            script.push(`echo "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
         }
     }
     script.push(`cd ${answers.workspace}`);
-    script.push(`echo -e "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
-    script.push(`echo -e "\\e[32m${chalk.bold.green(`PROCESS STARTED FOR :: ${repo.name}`)}\\e[0m"`);
-    script.push(`echo -e "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
+    script.push(`echo "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
+    script.push(`echo "\\e[32m${chalk.bold.green(`PROCESS STARTED FOR :: ${repo.name}`)}\\e[0m"`);
+    script.push(`echo "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
     buildImage(repo, answers, script);
     if (answers.upload) {
-        script.push(`echo -e "\\e[32m${chalk.bold.blue('***********************************')}\\e[0m"`);
-        script.push(`echo -e "\\e[32m${chalk.bold.blue(`UPLOADING TO E-DELIVERY :: ${repo.name}`)}\\e[0m"`);
-        script.push(`echo -e "\\e[32m${chalk.bold.blue('***********************************')}\\e[0m"`);
+        script.push(`echo "\\e[32m${chalk.bold.blue('***********************************')}\\e[0m"`);
+        script.push(`echo "\\e[32m${chalk.bold.blue(`UPLOADING TO E-DELIVERY :: ${repo.name}`)}\\e[0m"`);
+        script.push(`echo "\\e[32m${chalk.bold.blue('***********************************')}\\e[0m"`);
         script.push(`cd ${answers.saveLocation}`);
         script.push(`rsync -Pav "ssh -i /home/ubuntu/edelivery-key" odp_${repo.short.toLowerCase()}.$TAG.tar.bz2 ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${answers.branch}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/`);
         script.push(`rsync -Pav "ssh -i /home/ubuntu/edelivery-key" yamls/${repo.short.toLowerCase()}.$TAG.yaml ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${answers.branch}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/.`);
-        script.push(`echo -e "\\e[32m${chalk.bold.blue('***********************************')}\\e[0m"`);
-        script.push(`echo -e "\\e[32m${chalk.bold.blue(`UPLOADED TO E-DELIVERY :: ${repo.name}`)}\\e[0m"`);
-        script.push(`echo -e "\\e[32m${chalk.bold.blue('***********************************')}\\e[0m"`);
+        script.push(`echo "\\e[32m${chalk.bold.blue('***********************************')}\\e[0m"`);
+        script.push(`echo "\\e[32m${chalk.bold.blue(`UPLOADED TO E-DELIVERY :: ${repo.name}`)}\\e[0m"`);
+        script.push(`echo "\\e[32m${chalk.bold.blue('***********************************')}\\e[0m"`);
     }
-    script.push(`echo -e "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
-    script.push(`echo -e "\\e[32m${chalk.bold.green(`PROCESS ENDED FOR :: ${repo.name}`)}\\e[0m"`);
-    script.push(`echo -e "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
+    script.push(`echo "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
+    script.push(`echo "\\e[32m${chalk.bold.green(`PROCESS ENDED FOR :: ${repo.name}`)}\\e[0m"`);
+    script.push(`echo "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
     script.push(`exit 0`);
     return script.join('\n');
 }
@@ -92,13 +92,13 @@ function buildImage(repo, answers, script) {
     script.push(`\tgit checkout ${answers.branch}`);
     // script.push(`\tssh-agent bash -c 'ssh-add ../${repo.name.toUpperCase()}-KEY; git pull origin ${answers.branch}'`);
     script.push(`\tgit pull origin ${answers.branch}`);
-    script.push(`\techo -e "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
-    script.push(`\techo -e "\\e[32m${chalk.bold.green('Changes found')}\\e[0m"`);
-    script.push(`\techo -e "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
+    script.push(`\techo "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
+    script.push(`\techo "\\e[32m${chalk.bold.green('Changes found')}\\e[0m"`);
+    script.push(`\techo "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
     script.push(`\tif [ $lastPull ]; then`);
     script.push(`\t\tgit log --pretty=oneline --since=$lastPull`);
     script.push(`\tfi`);
-    script.push(`\techo -e "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
+    script.push(`\techo "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
     script.push(`else`);
     // script.push(`\tssh-agent bash -c 'ssh-add ./${repo.name.toUpperCase()}-KEY; git clone ${repo.url}'`);
     script.push(`\tgit clone ${repo.url}`);
