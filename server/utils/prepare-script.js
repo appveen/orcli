@@ -32,35 +32,35 @@ function hotfixScript(answers) {
         for (let i = 0; i < repo.dependency.length; i++) {
             script.push(`cd ${answers.workspace}`);
             const dep = repo.dependency[i];
-            script.push(`echo "${chalk.green('***********************************')}"`);
-            script.push(`echo "${chalk.green(`BUILD STARTED FOR DEPENDENCY :: ${dep}`)}"`);
-            script.push(`echo "${chalk.green('***********************************')}"`);
+            script.push(`echo "${chalk.bold.green('***********************************')}"`);
+            script.push(`echo "${chalk.bold.green(`BUILD STARTED FOR DEPENDENCY :: ${dep}`)}"`);
+            script.push(`echo "${chalk.bold.green('***********************************')}"`);
             const tempRepo = repoList.find(e => e.name === dep);
             buildImage(tempRepo, answers, script);
-            script.push(`echo "${chalk.green('***********************************')}"`);
-            script.push(`echo "${chalk.green(`BUILD ENDED FOR DEPENDENCY :: ${dep}`)}"`);
-            script.push(`echo "${chalk.green('***********************************')}"`);
+            script.push(`echo "${chalk.bold.green('***********************************')}"`);
+            script.push(`echo "${chalk.bold.green(`BUILD ENDED FOR DEPENDENCY :: ${dep}`)}"`);
+            script.push(`echo "${chalk.bold.green('***********************************')}"`);
         }
     }
     script.push(`cd ${answers.workspace}`);
-    script.push(`echo "${chalk.green('***********************************')}"`);
-    script.push(`echo "${chalk.green(`PROCESS STARTED FOR :: ${repo.name}`)}"`);
-    script.push(`echo "${chalk.green('***********************************')}"`);
+    script.push(`echo "${chalk.bold.green('***********************************')}"`);
+    script.push(`echo "${chalk.bold.green(`PROCESS STARTED FOR :: ${repo.name}`)}"`);
+    script.push(`echo "${chalk.bold.green('***********************************')}"`);
     buildImage(repo, answers, script);
     if (answers.upload) {
-        script.push(`echo "${chalk.blue('***********************************')}"`);
-        script.push(`echo "${chalk.blue(`UPLOADING TO E-DELIVERY :: ${repo.name}`)}"`);
-        script.push(`echo "${chalk.blue('***********************************')}"`);
+        script.push(`echo "${chalk.bold.blue('***********************************')}"`);
+        script.push(`echo "${chalk.bold.blue(`UPLOADING TO E-DELIVERY :: ${repo.name}`)}"`);
+        script.push(`echo "${chalk.bold.blue('***********************************')}"`);
         script.push(`cd ${answers.saveLocation}`);
         script.push(`rsync -Pav -e "ssh -i /home/ubuntu/edelivery-key" odp_${repo.short.toLowerCase()}.$TAG.tar.bz2 ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${answers.branch}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/`);
         script.push(`rsync -Pav -e "ssh -i /home/ubuntu/edelivery-key" yamls/${repo.short.toLowerCase()}.$TAG.yaml ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${answers.branch}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/.`);
-        script.push(`echo "${chalk.blue('***********************************')}"`);
-        script.push(`echo "${chalk.blue(`UPLOADED TO E-DELIVERY :: ${repo.name}`)}"`);
-        script.push(`echo "${chalk.blue('***********************************')}"`);
+        script.push(`echo "${chalk.bold.blue('***********************************')}"`);
+        script.push(`echo "${chalk.bold.blue(`UPLOADED TO E-DELIVERY :: ${repo.name}`)}"`);
+        script.push(`echo "${chalk.bold.blue('***********************************')}"`);
     }
-    script.push(`echo "${chalk.green('***********************************')}"`);
-    script.push(`echo "${chalk.green(`PROCESS ENDED FOR :: ${repo.name}`)}"`);
-    script.push(`echo "${chalk.green('***********************************')}"`);
+    script.push(`echo "${chalk.bold.green('***********************************')}"`);
+    script.push(`echo "${chalk.bold.green(`PROCESS ENDED FOR :: ${repo.name}`)}"`);
+    script.push(`echo "${chalk.bold.green('***********************************')}"`);
     script.push(`exit 0`);
     return script.join('\n');
 }
@@ -93,13 +93,13 @@ function buildImage(repo, answers, script) {
     script.push(`\tgit checkout ${answers.branch}`);
     // script.push(`\tssh-agent bash -c 'ssh-add ../${repo.name.toUpperCase()}-KEY; git pull origin ${answers.branch}'`);
     script.push(`\tgit pull origin ${answers.branch}`);
-    script.push(`\techo "${chalk.green('***********************************')}"`);
-    script.push(`\techo "${chalk.green('Changes found')}"`);
-    script.push(`\techo "${chalk.green('***********************************')}"`);
+    script.push(`\techo "${chalk.bold.green('***********************************')}"`);
+    script.push(`\techo "${chalk.bold.green('Changes found')}"`);
+    script.push(`\techo "${chalk.bold.green('***********************************')}"`);
     script.push(`\tif [ $lastPull ]; then`);
     script.push(`\t\tgit log --pretty=oneline --since=$lastPull`);
     script.push(`\tfi`);
-    script.push(`\techo "${chalk.green('***********************************')}"`);
+    script.push(`\techo "${chalk.bold.green('***********************************')}"`);
     script.push(`else`);
     // script.push(`\tssh-agent bash -c 'ssh-add ./${repo.name.toUpperCase()}-KEY; git clone ${repo.url}'`);
     script.push(`\tgit clone ${repo.url}`);
