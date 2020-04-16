@@ -132,7 +132,7 @@ function buildImage(repo, answers, script) {
         script.push(`\t\tdocker save -o ${tarName} ${imageName}`);
         script.push(`\t\tbzip2 ${tarName}`);
     }
-    if (answers.deploy && repo.short) {
+    if (answers.deploy && repo.short && repo.short !== 'AUTHOR' && repo.short !== 'APPCENTER' && repo.short !== 'SWAGGER') {
         script.push(`\t\tkubectl set image deployment/${repo.short.toLowerCase()} ${repo.short.toLowerCase()}=odp:${repo.short.toLowerCase()}.$TAG -n ${answers.namespace} --record=true`);
     }
     script.push(`\tfi`);
