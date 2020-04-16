@@ -116,7 +116,7 @@ function buildImage(repo, answers, script) {
     if (answers.deploy && repo.short) {
         script.push(`TAG=${ODP_RELEASE}-hotfix-${answers.hotfix}"_"$cDate`);
     } else {
-        script.push(`TAG=${ODP_RELEASE}-hotfix-${answers.hotfix}`);
+        script.push(`TAG=${ODP_RELEASE}-hotfix-${answreers.hotfix}`);
     }
     script.push(`if [ -f scripts/build_image.sh ]; then`);
     if (answers.deploy && repo.short) {
@@ -131,11 +131,11 @@ function buildImage(repo, answers, script) {
         script.push(`\t\trm -rf ${tarName}.bz2`);
         script.push(`\t\tdocker save -o ${tarName} ${imageName}`);
         script.push(`\t\tbzip2 ${tarName}`);
+        script.push(`\tfi`);
     }
     if (answers.deploy && repo.short && repo.short !== 'AUTHOR' && repo.short !== 'APPCENTER' && repo.short !== 'SWAGGER') {
         script.push(`\t\tkubectl set image deployment/${repo.short.toLowerCase()} ${repo.short.toLowerCase()}=odp:${repo.short.toLowerCase()}.$TAG -n ${answers.namespace} --record=true`);
     }
-    script.push(`\tfi`);
     script.push(`else`);
     script.push(`\tif [ -f scripts/build_jar.sh ]; then`);
     script.push(`\t\tsh scripts/build_jar.sh`);
