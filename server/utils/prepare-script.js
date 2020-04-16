@@ -96,7 +96,7 @@ function buildImage(repo, answers, script) {
     script.push(`\techo "\\e[32m${chalk.bold.green('Changes found')}\\e[0m"`);
     script.push(`\techo "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
     script.push(`\tif [ $lastPull ]; then`);
-    script.push(`\t\tgit log --pretty=oneline --since=$lastPull`);
+    script.push(`\t\tgit log --pretty=oneline --since=\`$lastPull\``);
     script.push(`\tfi`);
     script.push(`\techo "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
     script.push(`else`);
