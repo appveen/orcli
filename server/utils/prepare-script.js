@@ -116,7 +116,7 @@ function buildImage(repo, answers, script) {
     if (answers.deploy && repo.short) {
         script.push(`TAG=${ODP_RELEASE}-hotfix-${answers.hotfix}"_"$cDate`);
     } else {
-        script.push(`TAG=${ODP_RELEASE}-hotfix-${answreers.hotfix}`);
+        script.push(`TAG=${ODP_RELEASE}-hotfix-${answers.hotfix}`);
     }
     script.push(`if [ -f scripts/build_image.sh ]; then`);
     if (answers.deploy && repo.short) {
