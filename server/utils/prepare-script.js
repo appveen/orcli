@@ -31,14 +31,14 @@ function hotfixScript(answers) {
         for (let i = 0; i < repo.dependency.length; i++) {
             script.push(`cd ${answers.workspace}`);
             const dep = repo.dependency[i];
-            script.push(`echo "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
-            script.push(`echo "\\e[32m${chalk.bold.green(`BUILD STARTED FOR DEPENDENCY :: ${dep}`)}\\e[0m"`);
-            script.push(`echo "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
+            script.push(`echo "\\e[36m${chalk.bold.green('***********************************')}\\e[0m"`);
+            script.push(`echo "\\e[36m${chalk.bold.green(`BUILD STARTED FOR DEPENDENCY :: ${dep}`)}\\e[0m"`);
+            script.push(`echo "\\e[36m${chalk.bold.green('***********************************')}\\e[0m"`);
             const tempRepo = repoList.find(e => e.name === dep);
             buildImage(tempRepo, answers, script);
-            script.push(`echo "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
-            script.push(`echo "\\e[32m${chalk.bold.green(`BUILD ENDED FOR DEPENDENCY :: ${dep}`)}\\e[0m"`);
-            script.push(`echo "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
+            script.push(`echo "\\e[36m${chalk.bold.green('***********************************')}\\e[0m"`);
+            script.push(`echo "\\e[36m${chalk.bold.green(`BUILD ENDED FOR DEPENDENCY :: ${dep}`)}\\e[0m"`);
+            script.push(`echo "\\e[36m${chalk.bold.green('***********************************')}\\e[0m"`);
         }
     }
     script.push(`cd ${answers.workspace}`);
@@ -47,15 +47,15 @@ function hotfixScript(answers) {
     script.push(`echo "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
     buildImage(repo, answers, script);
     if (answers.upload) {
-        script.push(`echo "\\e[32m${chalk.bold.blue('***********************************')}\\e[0m"`);
-        script.push(`echo "\\e[32m${chalk.bold.blue(`UPLOADING TO E-DELIVERY :: ${repo.name}`)}\\e[0m"`);
-        script.push(`echo "\\e[32m${chalk.bold.blue('***********************************')}\\e[0m"`);
+        script.push(`echo "\\e[34m${chalk.bold.blue('***********************************')}\\e[0m"`);
+        script.push(`echo "\\e[34m${chalk.bold.blue(`UPLOADING TO E-DELIVERY :: ${repo.name}`)}\\e[0m"`);
+        script.push(`echo "\\e[34m${chalk.bold.blue('***********************************')}\\e[0m"`);
         script.push(`cd ${answers.saveLocation}`);
         script.push(`rsync -Pav -e "ssh -i /home/ubuntu/edelivery-key" odp_${repo.short.toLowerCase()}.$TAG.tar.bz2 ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${answers.branch}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/`);
         script.push(`rsync -Pav -e "ssh -i /home/ubuntu/edelivery-key" yamls/${repo.short.toLowerCase()}.$TAG.yaml ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${answers.branch}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/.`);
-        script.push(`echo "\\e[32m${chalk.bold.blue('***********************************')}\\e[0m"`);
-        script.push(`echo "\\e[32m${chalk.bold.blue(`UPLOADED TO E-DELIVERY :: ${repo.name}`)}\\e[0m"`);
-        script.push(`echo "\\e[32m${chalk.bold.blue('***********************************')}\\e[0m"`);
+        script.push(`echo "\\e[34m${chalk.bold.blue('***********************************')}\\e[0m"`);
+        script.push(`echo "\\e[34m${chalk.bold.blue(`UPLOADED TO E-DELIVERY :: ${repo.name}`)}\\e[0m"`);
+        script.push(`echo "\\e[34m${chalk.bold.blue('***********************************')}\\e[0m"`);
     }
     script.push(`echo "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
     script.push(`echo "\\e[32m${chalk.bold.green(`PROCESS ENDED FOR :: ${repo.name}`)}\\e[0m"`);
