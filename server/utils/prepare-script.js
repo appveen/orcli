@@ -51,8 +51,8 @@ function hotfixScript(answers) {
         script.push(`echo "\\e[32m${chalk.bold.blue(`UPLOADING TO E-DELIVERY :: ${repo.name}`)}\\e[0m"`);
         script.push(`echo "\\e[32m${chalk.bold.blue('***********************************')}\\e[0m"`);
         script.push(`cd ${answers.saveLocation}`);
-        script.push(`rsync -Pav "ssh -i /home/ubuntu/edelivery-key" odp_${repo.short.toLowerCase()}.$TAG.tar.bz2 ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${answers.branch}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/`);
-        script.push(`rsync -Pav "ssh -i /home/ubuntu/edelivery-key" yamls/${repo.short.toLowerCase()}.$TAG.yaml ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${answers.branch}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/.`);
+        script.push(`rsync -Pav -e "ssh -i /home/ubuntu/edelivery-key" odp_${repo.short.toLowerCase()}.$TAG.tar.bz2 ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${answers.branch}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/`);
+        script.push(`rsync -Pav -e "ssh -i /home/ubuntu/edelivery-key" yamls/${repo.short.toLowerCase()}.$TAG.yaml ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${answers.branch}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/.`);
         script.push(`echo "\\e[32m${chalk.bold.blue('***********************************')}\\e[0m"`);
         script.push(`echo "\\e[32m${chalk.bold.blue(`UPLOADED TO E-DELIVERY :: ${repo.name}`)}\\e[0m"`);
         script.push(`echo "\\e[32m${chalk.bold.blue('***********************************')}\\e[0m"`);
