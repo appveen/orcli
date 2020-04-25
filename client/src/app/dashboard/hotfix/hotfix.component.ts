@@ -30,7 +30,8 @@ export class HotfixComponent implements OnInit {
       hotfix: [1, [Validators.required, Validators.min(1)]],
       cleanBuild: [true, [Validators.required]],
       deploy: [false, [Validators.required]],
-      upload: [false, [Validators.required]]
+      upload: [false, [Validators.required]],
+      baseImage: [false]
     });
   }
 

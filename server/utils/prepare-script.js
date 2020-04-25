@@ -53,6 +53,15 @@ function hotfixScript(answers) {
         script.push(`cd ${answers.saveLocation}`);
         script.push(`rsync -Pav -e "ssh -i /home/ubuntu/edelivery-key" odp_${repo.short.toLowerCase()}.$TAG.tar.bz2 ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${answers.branch}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/`);
         script.push(`rsync -Pav -e "ssh -i /home/ubuntu/edelivery-key" yamls/${repo.short.toLowerCase()}.$TAG.yaml ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${answers.branch}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/.`);
+        if (answers.cleanBuild && repo.short == 'SM' && answers.baseImage) {
+            script.push(`echo "\\e[34m${chalk.bold.blue('***********************************')}\\e[0m"`);
+            script.push(`echo "\\e[34m${chalk.bold.blue(`UPLOADING BASE IMAGE :: ${repo.name}`)}\\e[0m"`);
+            script.push(`echo "\\e[34m${chalk.bold.blue('***********************************')}\\e[0m"`);
+            script.push(`rsync -Pav -e "ssh -i /home/ubuntu/edelivery-key" odp_base.${ODP_RELEASE}.tar.bz2 ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${answers.branch}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/`);
+            script.push(`echo "\\e[34m${chalk.bold.blue('***********************************')}\\e[0m"`);
+            script.push(`echo "\\e[34m${chalk.bold.blue(`UPLOADED BASE IMAGE :: ${repo.name}`)}\\e[0m"`);
+            script.push(`echo "\\e[34m${chalk.bold.blue('***********************************')}\\e[0m"`);
+        }
         script.push(`echo "\\e[34m${chalk.bold.blue('***********************************')}\\e[0m"`);
         script.push(`echo "\\e[34m${chalk.bold.blue(`UPLOADED TO E-DELIVERY :: ${repo.name}`)}\\e[0m"`);
         script.push(`echo "\\e[34m${chalk.bold.blue('***********************************')}\\e[0m"`);

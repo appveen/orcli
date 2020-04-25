@@ -60,6 +60,15 @@
         <input type="text" class="form-control" name="namespace" formControlName="namespace"
           [ngClass]="{'is-invalid': form.get('namespace').invalid}">
       </div>
+      <div *ngIf="selectedRepo.short=='SM' && form.get('cleanBuild').value && form.get('upload').value"
+        class="form-group">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="baseImage" name="baseImage"
+            formControlName="baseImage">
+          <label class="custom-control-label" for="baseImage"
+            ngbTooltip="This will upload the new base image to e-delivery">Release New Base Image</label>
+        </div>
+      </div>
       <div *ngIf="form.get('upload').value" class="form-group">
         <label for="code">Release Authorization Code</label>
         <input type="text" class="form-control" name="code" formControlName="code"
