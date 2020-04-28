@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const log4js = require('log4js');
 const socket = require('socket.io');
+const NodeSchedule = require('node-schedule');
 
 const PORT = process.env.PORT || 3001;
 const LOG_LEVEL = process.env.LOG_LEVEL || 'info';
@@ -24,6 +25,8 @@ global.cookieName = 'orcli-session';
 if (!fs.existsSync(global.dbPath)) {
     fs.mkdirSync(global.dbPath);
 }
+
+const buildsModel = require('./models/builds.model');
 
 log4js.configure({
     appenders: { 'out': { type: 'stdout' }, server: { type: 'multiFile', base: 'logs/', property: 'categoryName', extension: '.log', maxLogSize: 10485760, backups: 3, compress: true } },
@@ -85,4 +88,14 @@ server.listen(PORT, (err) => {
 
 io.on('connection', function (socket) {
     logger.info('Socket Client Connected.', socket.id);
+});
+
+
+NodeSchedule.scheduleJob('cleanLogs', '1 */2 * * *', function (fireDate) {
+    logger.info('CRON Jon : ' + fireDate + ' : Cleaning Old Builds');
+    buildsModel.removeOldLogs().then(res => {
+        logger.info('Old Builds Removed');
+    }).catch(err => {
+        logger.error('Old Builds Removed Error', err);
+    });
 });

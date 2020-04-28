@@ -191,7 +191,6 @@ function findByIdAndUpdate(id, payload) {
     });
 }
 
-
 /**
  * @param {string} id 
  */
@@ -210,9 +209,29 @@ function findByIdAndRemove(id) {
 }
 
 
+function removeOldLogs() {
+    return new Promise((resolve, reject) => {
+        const promises = [];
+        db.all(`SELECT _id FROM builds SORT _id SKIP 30`, function (err, rows) {
+            if (err) {
+                logger.error(err);
+                reject(err);
+            } else {
+                rows.forEach(e => {
+                    promises.push(findByIdAndRemove(e._id));
+                });
+                logger.debug(rows);
+                Promise.all(promises).then(resolve).catch(reject);
+            }
+        });
+    });
+}
+
+
 module.exports.countDocuments = countDocuments;
 module.exports.find = find;
 module.exports.findById = findById;
 module.exports.create = create;
 module.exports.findByIdAndUpdate = findByIdAndUpdate;
 module.exports.findByIdAndRemove = findByIdAndRemove;
+module.exports.removeOldLogs = removeOldLogs;
