@@ -8,7 +8,8 @@ const buildsModel = require('./models/builds.model');
 const arr = [];
 buildsModel.find({
     select: '_id, status',
-    filter: 'status="Processing"'
+    filter: 'status="Processing"',
+    count: -1
 }).then(docs => {
     docs.forEach(doc => {
         console.log(doc);
