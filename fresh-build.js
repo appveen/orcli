@@ -12,9 +12,15 @@ const repoList = jsonfile.readFileSync(path.join(__dirname, 'repo-list.json'));
 function trigger(answers) {
     shell.rm('-rf', 'ODP_RELEASE');
     shell.rm('-rf', 'BRANCH');
-    const ODP_RELEASE = answers.patch || answers.branch;
+    const ODP_BRANCH = answers.patch || answers.branch;
+    let ODP_RELEASE;
+    if (ODP_BRANCH.split('/').length > 1) {
+        ODP_RELEASE = ODP_BRANCH.split('/').pop();
+    } else {
+        ODP_RELEASE = ODP_BRANCH;
+    }
     shell.exec(`echo ${ODP_RELEASE} > ODP_RELEASE`);
-    shell.exec(`echo ${answers.branch} > BRANCH`);
+    shell.exec(`echo ${ODP_BRANCH} > BRANCH`);
     shell.pwd()
     const repo = repoList.find(e => e.name === answers.repo);
     if (repo.dependency && repo.dependency.length > 0) {
@@ -47,7 +53,13 @@ function trigger(answers) {
  * @param {*} answers 
  */
 function buildImage(repo, answers) {
-    const ODP_RELEASE = answers.patch || answers.branch;
+    const ODP_BRANCH = answers.patch || answers.branch;
+    let ODP_RELEASE;
+    if (ODP_BRANCH.split('/').length > 1) {
+        ODP_RELEASE = ODP_BRANCH.split('/').pop();
+    } else {
+        ODP_RELEASE = ODP_BRANCH;
+    }
     let tag = ODP_RELEASE;
     if (answers.tag) {
         tag = answers.tag;
@@ -63,7 +75,7 @@ function buildImage(repo, answers) {
         shell.cd(repo.name);
         shell.env['WORKSPACE'] = shell.pwd();
         shell.exec(`git stash`);
-        shell.exec(`git checkout ${answers.branch}`);
+        shell.exec(`git checkout ${ODP_BRANCH}`);
         shell.exec(`git pull`);
         if (lastPull) {
             console.log(chalk.cyan(''));
@@ -79,7 +91,7 @@ function buildImage(repo, answers) {
         shell.exec(`git clone ${repo.url}`);
         shell.cd(repo.name);
         shell.env['WORKSPACE'] = shell.pwd();
-        shell.exec(`git checkout ${answers.branch}`);
+        shell.exec(`git checkout ${ODP_BRANCH}`);
         shell.exec(`echo ${new Date().toISOString()} > ../LAST_PULL_${repo.name.toUpperCase()}`);
     }
     if (repo.short) {
