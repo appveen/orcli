@@ -9,7 +9,13 @@ const repoList = jsonfile.readFileSync(path.join(process.cwd(), 'repo-list.json'
 
 function hotfixScript(answers) {
     const script = [];
-    const ODP_RELEASE = answers.patch || answers.branch;
+    const ODP_BRANCH = answers.patch || answers.branch;
+    let ODP_RELEASE;
+    if (ODP_BRANCH.split('/').length > 1) {
+        ODP_RELEASE = ODP_BRANCH.split('/').pop();
+    } else {
+        ODP_RELEASE = ODP_BRANCH;
+    }
     script.push(`#!/bin/bash`);
     script.push(`cDate=\`date +%Y.%m.%d.%H.%M\` #Current date and time`);
     script.push(`mkdir -p ${answers.workspace}`);
@@ -21,7 +27,7 @@ function hotfixScript(answers) {
     script.push(`rm -rf CICD`);
     script.push(`rm -rf ODP_NAMESPACE`);
     script.push(`echo ${ODP_RELEASE} > ODP_RELEASE`);
-    script.push(`echo ${answers.branch} > BRANCH`);
+    script.push(`echo ${ODP_BRANCH} > BRANCH`);
     if (answers.deploy) {
         script.push(`echo ${answers.namespace} > ODP_NAMESPACE`);
     }
@@ -51,13 +57,13 @@ function hotfixScript(answers) {
         script.push(`echo "\\e[34m${chalk.bold.blue(`UPLOADING TO E-DELIVERY :: ${repo.name}`)}\\e[0m"`);
         script.push(`echo "\\e[34m${chalk.bold.blue('***********************************')}\\e[0m"`);
         script.push(`cd ${answers.saveLocation}`);
-        script.push(`rsync -Pav -e "ssh -i /home/ubuntu/edelivery-key" odp_${repo.short.toLowerCase()}.$TAG.tar.bz2 ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${answers.branch}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/`);
-        script.push(`rsync -Pav -e "ssh -i /home/ubuntu/edelivery-key" yamls/${repo.short.toLowerCase()}.$TAG.yaml ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${answers.branch}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/.`);
+        script.push(`rsync -Pav -e "ssh -i /home/ubuntu/edelivery-key" odp_${repo.short.toLowerCase()}.$TAG.tar.bz2 ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${ODP_RELEASE}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/`);
+        script.push(`rsync -Pav -e "ssh -i /home/ubuntu/edelivery-key" yamls/${repo.short.toLowerCase()}.$TAG.yaml ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${ODP_RELEASE}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/.`);
         if (answers.cleanBuild && repo.short == 'SM' && answers.baseImage) {
             script.push(`echo "\\e[34m${chalk.bold.blue('***********************************')}\\e[0m"`);
             script.push(`echo "\\e[34m${chalk.bold.blue(`UPLOADING BASE IMAGE :: ${repo.name}`)}\\e[0m"`);
             script.push(`echo "\\e[34m${chalk.bold.blue('***********************************')}\\e[0m"`);
-            script.push(`rsync -Pav -e "ssh -i /home/ubuntu/edelivery-key" odp_base.${ODP_RELEASE}.tar.bz2 ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${answers.branch}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/`);
+            script.push(`rsync -Pav -e "ssh -i /home/ubuntu/edelivery-key" odp_base.${ODP_RELEASE}.tar.bz2 ubuntu@edelivery.capiot.com:~/e-delivery/Releases/ODP/${ODP_RELEASE}/Hotfix/${repo.short}/${repo.short}-hotfix-${answers.hotfix}/`);
             script.push(`echo "\\e[34m${chalk.bold.blue('***********************************')}\\e[0m"`);
             script.push(`echo "\\e[34m${chalk.bold.blue(`UPLOADED BASE IMAGE :: ${repo.name}`)}\\e[0m"`);
             script.push(`echo "\\e[34m${chalk.bold.blue('***********************************')}\\e[0m"`);
@@ -82,7 +88,13 @@ function buildImage(repo, answers, script) {
     if (!repo.short) {
         repo.short = '';
     }
-    const ODP_RELEASE = answers.patch || answers.branch;
+    const ODP_BRANCH = answers.patch || answers.branch;
+    let ODP_RELEASE;
+    if (ODP_BRANCH.split('/').length > 1) {
+        ODP_RELEASE = ODP_BRANCH.split('/').pop();
+    } else {
+        ODP_RELEASE = ODP_BRANCH;
+    }
     const yamlFile = `${repo.short.toLowerCase()}.${ODP_RELEASE}-hotfix-${answers.hotfix}.yaml`;
     const yamlPath = path.join(answers.saveLocation, 'yamls', yamlFile);
     const imageName = `odp:${repo.short.toLowerCase()}.${ODP_RELEASE}-hotfix-${answers.hotfix}`;
@@ -98,9 +110,9 @@ function buildImage(repo, answers, script) {
     script.push(`\tcd ${repo.name}`);
     // script.push(`\texport WORKSPACE=$cwd`);
     script.push(`\tgit stash`);
-    script.push(`\tgit checkout ${answers.branch}`);
-    // script.push(`\tssh-agent bash -c 'ssh-add ../${repo.name.toUpperCase()}-KEY; git pull origin ${answers.branch}'`);
-    script.push(`\tgit pull origin ${answers.branch}`);
+    script.push(`\tgit checkout ${ODP_BRANCH}`);
+    // script.push(`\tssh-agent bash -c 'ssh-add ../${repo.name.toUpperCase()}-KEY; git pull origin ${ODP_BRANCH}'`);
+    script.push(`\tgit pull origin ${ODP_BRANCH}`);
     script.push(`\techo "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
     script.push(`\techo "\\e[32m${chalk.bold.green('Changes found')}\\e[0m"`);
     script.push(`\techo "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
@@ -112,7 +124,7 @@ function buildImage(repo, answers, script) {
     // script.push(`\tssh-agent bash -c 'ssh-add ./${repo.name.toUpperCase()}-KEY; git clone ${repo.url}'`);
     script.push(`\tgit clone ${repo.url}`);
     script.push(`\tcd ${repo.name}`);
-    script.push(`\tgit checkout ${answers.branch}`);
+    script.push(`\tgit checkout ${ODP_BRANCH}`);
     script.push(`fi`);
     script.push(`echo \`date -Is\` > ../LAST_PULL_${repo.name.toUpperCase()}`);
     script.push(`export WORKSPACE=${path.join(answers.workspace, repo.name)}`);
