@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const http = require('http');
+const net = require('net');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const log4js = require('log4js');
@@ -68,6 +69,18 @@ server.listen(PORT, (err) => {
         logger.error(err);
     }
 });
+
+// const client = net.connect({
+//     port: '8000'
+// });
+
+// client.on('connect', function () {
+//     logger.info('Connected to service');
+// });
+
+// client.on('data', function (data) {
+//     logger.info('Data from Service', data);
+// });
 
 
 io.on('connection', function (socket) {
