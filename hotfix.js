@@ -12,12 +12,15 @@ const repoList = jsonfile.readFileSync(path.join(__dirname, 'repo-list.json'));
 function trigger(answers) {
     shell.rm('-rf', 'ODP_RELEASE');
     shell.rm('-rf', 'BRANCH');
-    const ODP_BRANCH = answers.patch || answers.branch;
+    let ODP_BRANCH = answers.patch || answers.branch;
     let ODP_RELEASE;
     if (ODP_BRANCH.split('/').length > 1) {
         ODP_RELEASE = ODP_BRANCH.split('/').pop();
     } else {
         ODP_RELEASE = ODP_BRANCH;
+        if (ODP_BRANCH !== 'dev' && ODP_BRANCH !== 'perf') {
+            ODP_BRANCH = 'release/' + ODP_BRANCH;
+        }
     }
     shell.exec(`echo ${ODP_RELEASE} > ODP_RELEASE`);
     shell.exec(`echo ${ODP_BRANCH} > BRANCH`);
