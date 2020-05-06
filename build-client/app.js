@@ -2,6 +2,7 @@ const { execFile } = require('child_process');
 const os = require('os');
 const fs = require('fs');
 const path = require('path');
+const https = require('https');
 const express = require('express');
 const log4js = require('log4js');
 const { Observable } = require('rxjs');
@@ -63,8 +64,12 @@ app.post('/trigger', (req, res) => {
     });
 });
 
-
-const server = app.listen(PORT, (err) => {
+const server = https.createServer({
+    ca: fs.readFileSync('./keys/ca.crt'),
+    cert: fs.readFileSync('./keys/server.crt'),
+    key: fs.readFileSync('./keys/server.key'),
+    requestCert: true,
+}, app).listen(PORT, (err) => {
     if (!err) {
         logger.info('Server is listening on port', PORT);
     } else {
@@ -72,10 +77,15 @@ const server = app.listen(PORT, (err) => {
     }
 });
 
-server.on('connection', function (socket) {
-    client = socket;
-    logger.info('Client connected through TCP', socket.remoteAddress);
-    socket.write('Hello');
+server.on('secureConnection', function (socket) {
+    logger.info('Client connected through TLS', socket.remoteAddress, socket.authorized);
+    if (socket.authorized) {
+        client = socket;
+    }
+});
+
+server.on('tlsClientError', function (err, socket) {
+    logger.info('Client Error', err, socket.authorized);
 });
 
 server.on('close', function () {
