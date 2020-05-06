@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const http = require('http');
-const net = require('net');
+const tls = require('tls');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const log4js = require('log4js');
@@ -73,22 +73,26 @@ server.listen(PORT, (err) => {
     }
 });
 
-// const client = net.connect({
-//     port: '8000'
+// const client = tls.connect({
+//     port: 8000,
+//     // ca: [fs.readFileSync('../build-client/keys/ca.crt')],
+//     key: fs.readFileSync('../build-client/keys/client.key'),
+//     cert: fs.readFileSync('../build-client/keys/client.crt'),
+//     rejectUnauthorized: false
 // });
 
-// client.on('connect', function () {
+// client.on('secureConnect', function () {
 //     logger.info('Connected to service');
 // });
 
 // client.on('data', function (data) {
-//     logger.info('Data from Service', data);
+//     logger.info('Data from Service', data.toString());
 // });
 
 
-io.on('connection', function (socket) {
-    logger.info('Socket Client Connected.', socket.id);
-});
+// io.on('connection', function (socket) {
+//     logger.info('Socket Client Connected.', socket.id);
+// });
 
 
 NodeSchedule.scheduleJob('cleanLogs', '1 */2 * * *', function (fireDate) {
