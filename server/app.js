@@ -58,9 +58,9 @@ app.use((req, res, next) => {
     }
 });
 
-app.use('/api', require('./controllers'));
+app.use('/orcli/api', require('./controllers'));
 
-app.get('/', (req, res) => {
+app.get('/orcli', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
