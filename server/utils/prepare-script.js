@@ -106,7 +106,7 @@ function buildImage(repo, answers, script) {
     // script.push(`echo ${repo.key} > ${repo.name.toUpperCase()}-KEY`);
     // script.push(`chmod 600 ${repo.name.toUpperCase()}-KEY`);
     script.push(`if [ -d ${repo.name} ]; then`);
-    script.push(`\tlastPull=$(<LAST_PULL_${repo.name.toUpperCase()})`);
+    script.push(`\tlastPull=\`data --file=LAST_PULL_${repo.name.toUpperCase()}\``);
     script.push(`\tcd ${repo.name}`);
     // script.push(`\texport WORKSPACE=$cwd`);
     script.push(`\tgit stash`);
@@ -117,7 +117,7 @@ function buildImage(repo, answers, script) {
     script.push(`\techo "\\e[32m${chalk.bold.green('Changes found')}\\e[0m"`);
     script.push(`\techo "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
     // script.push(`\tif [ $lastPull ]; then`);
-    script.push(`\t\tgit log --pretty=oneline --since=$lastPull`);
+    script.push(`\t\tgit log --pretty=oneline --since="$lastPull"`);
     // script.push(`\tfi`);
     script.push(`\techo "\\e[32m${chalk.bold.green('***********************************')}\\e[0m"`);
     script.push(`else`);
