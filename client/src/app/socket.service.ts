@@ -18,7 +18,7 @@ export class SocketService {
 
   connect() {
     const self = this;
-    self.socket = io('/', {
+    self.socket = io('/orcli/', {
       path: '/socket'
     });
     self.socket.on('logs', function (data) {
