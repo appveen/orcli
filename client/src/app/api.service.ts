@@ -11,13 +11,13 @@ export class ApiService {
 
   post(type: string, path: string, data: any) {
     const self = this;
-    const url = '/api' + environment.api[type] + path;
+    const url = '/orcli/api' + environment.api[type] + path;
     return self.http.post(url, data);
   }
 
   put(type: string, path: string, data: any) {
     const self = this;
-    const url = '/api' + environment.api[type] + path;
+    const url = '/orcli/api' + environment.api[type] + path;
     return self.http.put(url, data);
   }
 
@@ -39,13 +39,13 @@ export class ApiService {
     if (options && options.count) {
       params = params.append('count', options.count.toString());
     }
-    const url = '/api' + environment.api[type] + path;
+    const url = '/orcli/api' + environment.api[type] + path;
     return self.http.get(url, { params });
   }
 
   delete(type: string, path: string) {
     const self = this;
-    const url = '/api' + environment.api[type] + path;
+    const url = '/orcli/api' + environment.api[type] + path;
     return self.http.delete(url);
   }
 }

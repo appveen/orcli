@@ -22,9 +22,7 @@ export class InterceptorService implements HttpInterceptor {
     if (this.data.userData && this.data.userData.token) {
       headers.Authorization = this.data.userData.token;
     }
-    const baseUrl = document.getElementsByTagName('base')[0].href;
     const request = req.clone({
-      url: `${baseUrl}${req.url}`,
       setHeaders: headers
     });
     return next.handle(request).pipe(catchError((error: HttpErrorResponse) => {
