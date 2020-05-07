@@ -150,6 +150,11 @@ inquirer
         if (answers.releaseType == 'New Release') {
             answers.workspace = path.join(answers.workspace, answers.release);
         } else {
+            if (answers.branch.split('/').length == 1) {
+                if (answers.branch !== 'dev' && answers.branch !== 'perf') {
+                    answers.branch = 'release/' + answers.branch;
+                }
+            }
             answers.workspace = path.join(answers.workspace, answers.branch);
         }
         const date = new Date();
