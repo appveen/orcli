@@ -58,6 +58,7 @@ function trigger(answers) {
 function buildImage(repo, answers) {
     const ODP_BRANCH = answers.patch || answers.branch;
     let ODP_RELEASE;
+    let TAG;
     if (ODP_BRANCH.split('/').length > 1) {
         ODP_RELEASE = ODP_BRANCH.split('/').pop();
     } else {
@@ -65,6 +66,11 @@ function buildImage(repo, answers) {
     }
     if (repo.short && answers.cleanBuild) {
         shell.touch(`CLEAN_BUILD_${repo.short}`)
+    }
+    if (answers.deploy) {
+        TAG = `hotfix-${answers.hotfix}_` + Date.now();
+    } else {
+        TAG = `hotfix-${answers.hotfix}`;
     }
     if (fs.existsSync(repo.name)) {
         let lastPull;
@@ -99,18 +105,21 @@ function buildImage(repo, answers) {
         shell.rm('-rf', `${yamlPath}`);
         shell.cp(`${repo.short.toLowerCase()}.yaml`, yamlPath);
         shell.sed('-i', '__release_tag__', `'${ODP_RELEASE}'`, yamlPath);
-        shell.sed('-i', '__release__', `${ODP_RELEASE}-hotfix-${answers.hotfix}`, yamlPath);
+        shell.sed('-i', '__release__', `${ODP_RELEASE}-${TAG}`, yamlPath);
     }
     if (fs.existsSync('scripts/build_image.sh')) {
-        shell.exec(`sh scripts/build_image.sh ${ODP_RELEASE} hotfix-${answers.hotfix}`);
+        shell.exec(`sh scripts/build_image.sh ${ODP_RELEASE} ${TAG}`);
         shell.cd(answers.saveLocation);
         if (repo.short) {
-            const imageName = `odp:${repo.short.toLowerCase()}.${ODP_RELEASE}-hotfix-${answers.hotfix}`;
-            const tarName = `odp_${repo.short.toLowerCase()}.${ODP_RELEASE}-hotfix-${answers.hotfix}.tar`;
+            const imageName = `odp:${repo.short.toLowerCase()}.${ODP_RELEASE}-${TAG}`;
+            const tarName = `odp_${repo.short.toLowerCase()}.${ODP_RELEASE}-${TAG}.tar`;
             shell.rm('-rf', `${tarName}`);
             shell.rm('-rf', `${tarName}.bz2`);
             shell.exec(`docker save -o ${tarName} ${imageName}`)
                 .exec(`bzip2 ${tarName}`);
+            if (answers.namespace && answers.deploy && repo.short && repo.short !== 'AUTHOR' && repo.short !== 'APPCENTER' && repo.short !== 'SWAGGER') {
+                shell.exec(`kubectl set image deployment/${repo.short.toLowerCase()} ${repo.short.toLowerCase()}=${imageName} -n ${answers.namespace} --record=true`);
+            }
         }
     } else {
         if (fs.existsSync('scripts/build_jar.sh')) {

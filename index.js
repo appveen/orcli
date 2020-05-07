@@ -122,6 +122,22 @@ inquirer
             message: 'Please enter image tag',
             default: defaultTag
         },
+        {
+            when: function (response) {
+                return response.releaseType === 'Hotfix';
+            },
+            type: 'confirm',
+            name: 'deploy',
+            message: 'You want to do deploy this in K8S'
+        },
+        {
+            when: function (response) {
+                return response.deploy;
+            },
+            type: 'input',
+            name: 'namespace',
+            message: 'Namespace to deploy'
+        }
         // {
         //     type: 'confirm',
         //     name: 'push',
