@@ -18,6 +18,8 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "../server/public",
+            "baseHref": "/orcli",
+            "deployUrl": "/orcli",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -69,7 +71,9 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "client:build",
-            "proxyConfig": "proxy.conf.json"
+            "proxyConfig": "proxy.conf.json",
+            "baseHref": "/",
+            "deployUrl": "/"
           },
           "configurations": {
             "production": {
@@ -126,6 +130,7 @@
           }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "client"
 }
