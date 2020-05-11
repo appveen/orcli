@@ -28,14 +28,19 @@ function trigger(answers) {
  */
 function reTagImage(repo, answers) {
     const TAG = answers.tag;
-    if(!TAG){
+    let LATEST_FILE = `LATEST_${repo.short.toUpperCase()}`;
+    if (repo.short && repo.short.toUpperCase() == 'NGINX') {
+        LATEST_FILE = `LATEST_PROXY`;
+    }
+    if (!TAG) {
         console.log(chalk.red('***********************************'));
         console.log(chalk.red(`New TAG Not Found`));
         console.log(chalk.red('***********************************'));
         process.exit(0);
     }
-    if (repo.short && fs.existsSync(`LATEST_${repo.short.toUpperCase()}`)) {
-        const latest = shell.cat(`LATEST_${repo.short.toUpperCase()}`);
+    shell.cd(answers.workspace);
+    if (repo.short && fs.existsSync(LATEST_FILE)) {
+        const latest = shell.cat(LATEST_FILE);
         const oldTag = `odp:${repo.short.toLowerCase()}.${latest}`;
         const newTag = `odp:${repo.short.toLowerCase()}.${TAG}`;
         const newTar = `odp_${repo.short.toLowerCase()}.${TAG}.tar`;
@@ -45,7 +50,7 @@ function reTagImage(repo, answers) {
             .exec(`bzip2 ${newTar}`);
     } else {
         console.log(chalk.red('***********************************'));
-        console.log(chalk.red(`LATEST_${repo.short.toUpperCase()} Not Found, Please build new Image`));
+        console.log(chalk.red(`${LATEST_FILE} Not Found, Please build new Image`));
         console.log(chalk.red('***********************************'));
         process.exit(0);
     }
