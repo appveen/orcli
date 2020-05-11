@@ -44,9 +44,9 @@ function reTagImage(repo, answers) {
     shell.cd(answers.workspace);
     if (repo.short && fs.existsSync(LATEST_FILE)) {
         const latest = shell.cat(LATEST_FILE);
-        const oldTag = `odp:${repo.short.toLowerCase()}.${latest}`;
-        const newTag = `odp:${repo.short.toLowerCase()}.${TAG}`;
-        const newTar = `odp_${repo.short.toLowerCase()}.${TAG}.tar`;
+        const oldTag = `odp:${repo.short.toLowerCase()}.${latest}`.trim('\n').trim(' ');
+        const newTag = `odp:${repo.short.toLowerCase()}.${TAG}`.trim('\n').trim(' ');
+        const newTar = `odp_${repo.short.toLowerCase()}.${TAG}.tar`.trim('\n').trim(' ');
         shell.cd(answers.saveLocation);
         shell.exec(`docker tag ${oldTag} ${newTag}`)
             .exec(`docker save -o ${newTar} ${newTag}`)
