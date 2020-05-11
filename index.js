@@ -11,6 +11,7 @@ const dateformat = require('dateformat');
 const release = require('./release');
 const hotfix = require('./hotfix');
 const freshBuild = require('./fresh-build');
+const reTagLastBuild = require('./retag-last-build');
 
 let defaultTag;
 
@@ -69,7 +70,8 @@ inquirer
             choices: [
                 'New Release',
                 'Fresh Build',
-                'Hotfix'
+                'Hotfix',
+                'Re-Tag Last Build'
             ]
         },
         {
@@ -81,7 +83,9 @@ inquirer
             message: 'Please enter release version'
         }, {
             when: function (response) {
-                return response.releaseType === 'Fresh Build' || response.releaseType === 'Hotfix';
+                return response.releaseType === 'Hotfix'
+                    || response.releaseType === 'Fresh Build'
+                    || response.releaseType === 'Re-Tag Last Build';
             },
             type: 'input',
             name: 'branch',
@@ -89,7 +93,9 @@ inquirer
         },
         {
             when: function (response) {
-                return response.releaseType === 'Hotfix' || response.releaseType === 'Fresh Build';
+                return response.releaseType === 'Hotfix'
+                    || response.releaseType === 'Fresh Build'
+                    || response.releaseType === 'Re-Tag Last Build';
             },
             type: 'list',
             name: 'repo',
@@ -115,7 +121,8 @@ inquirer
         {
             when: function (response) {
                 defaultTag = response.branch;
-                return response.releaseType === 'Fresh Build';
+                return response.releaseType === 'Fresh Build'
+                    || response.releaseType === 'Re-Tag Last Build';
             },
             type: 'input',
             name: 'tag',
@@ -166,7 +173,7 @@ inquirer
         if (answers.releaseType == 'New Release') {
             answers.workspace = path.join(answers.workspace, answers.release);
         } else {
-            if (answers.branch.split('/').length == 1) {
+            if (answers.branch && answers.branch.split('/').length == 1) {
                 if (answers.branch !== 'dev' && answers.branch !== 'perf') {
                     answers.branch = 'release/' + answers.branch;
                 }
@@ -194,6 +201,14 @@ inquirer
             freshBuild.trigger(answers);
             console.log(chalk.cyan('***********************************'));
             console.log(chalk.green(`FRESH BUILD ENDED :: ${answers.branch}`));
+            console.log(chalk.cyan('***********************************'));
+        } else if (answers.releaseType == 'Re-Tag Last Build') {
+            console.log(chalk.cyan('***********************************'));
+            console.log(chalk.green(`RE-TAGGING STARTED :: ${answers.tag}`));
+            console.log(chalk.cyan('***********************************'));
+            reTagLastBuild.trigger(answers);
+            console.log(chalk.cyan('***********************************'));
+            console.log(chalk.green(`RE-TAGGING ENDED :: ${answers.tag}`));
             console.log(chalk.cyan('***********************************'));
         } else {
             console.log(chalk.cyan('***********************************'));
