@@ -38,6 +38,9 @@ function reTagImage(repo, answers) {
         console.log(chalk.red('***********************************'));
         process.exit(0);
     }
+    console.log(chalk.cyan('***********************************'));
+    console.log(chalk.green(`WORKSPACE :: ${answers.workspace}`));
+    console.log(chalk.cyan('***********************************'));
     shell.cd(answers.workspace);
     if (repo.short && fs.existsSync(LATEST_FILE)) {
         const latest = shell.cat(LATEST_FILE);
@@ -45,7 +48,7 @@ function reTagImage(repo, answers) {
         const newTag = `odp:${repo.short.toLowerCase()}.${TAG}`;
         const newTar = `odp_${repo.short.toLowerCase()}.${TAG}.tar`;
         shell.cd(answers.saveLocation);
-        shell.exec(`docker tag  ${oldTag} ${newTag}`)
+        shell.exec(`docker tag ${oldTag} ${newTag}`)
             .exec(`docker save -o ${newTar} ${newTag}`)
             .exec(`bzip2 ${newTar}`);
     } else {
