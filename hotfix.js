@@ -4,6 +4,8 @@ const chalk = require('chalk');
 const shell = require('shelljs');
 const jsonfile = require('jsonfile');
 
+let TAG;
+
 /**
  * @type {[{name:string,url:string,node:boolean,short:string,dependency:string[]}]}
  */
@@ -58,7 +60,6 @@ function trigger(answers) {
 function buildImage(repo, answers) {
     const ODP_BRANCH = answers.patch || answers.branch;
     let ODP_RELEASE;
-    let TAG;
     if (ODP_BRANCH.split('/').length > 1) {
         ODP_RELEASE = ODP_BRANCH.split('/').pop();
     } else {
@@ -67,10 +68,12 @@ function buildImage(repo, answers) {
     if (repo.short && answers.cleanBuild) {
         shell.touch(`CLEAN_BUILD_${repo.short}`)
     }
-    if (answers.deploy) {
-        TAG = `hotfix-${answers.hotfix}_` + Date.now();
-    } else {
-        TAG = `hotfix-${answers.hotfix}`;
+    if (!TAG) {
+        if (answers.deploy) {
+            TAG = `hotfix-${answers.hotfix}_` + Date.now();
+        } else {
+            TAG = `hotfix-${answers.hotfix}`;
+        }
     }
     if (fs.existsSync(repo.name)) {
         let lastPull;
