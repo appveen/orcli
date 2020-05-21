@@ -28,7 +28,7 @@ function trigger(answers) {
     shell.exec(`echo ${ODP_BRANCH} > BRANCH`);
     shell.pwd()
     const repo = repoList.find(e => e.name === answers.repo);
-    if (repo.dependency && repo.dependency.length > 0) {
+    if (repo.dependency && repo.dependency.length > 0 && answers.cleanBuild) {
         for (let i = 0; i < repo.dependency.length; i++) {
             shell.cd(answers.workspace);
             const dep = repo.dependency[i];
