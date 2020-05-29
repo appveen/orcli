@@ -2,7 +2,7 @@
 
 set -e
 
-GITHUB_URL=https://github.com/appveen/orcli/service
+GITHUB_URL=https://github.com/appveen/orcli/build-client
 
 info()
 {
@@ -20,9 +20,10 @@ fatal()
 
 
 cd /lib/systemd/system
-
+info('Fetching Service............')
 wget -qO $GITHUB_URL/orcli.service
 
-
+info('Installing Service..........')
 cd /usr/bin
 wget -qO $GITHUB_URL/orcli-service
+info('=============== Install Completed ===============')
