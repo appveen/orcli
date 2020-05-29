@@ -1,5 +1,5 @@
 [Unit]
-Description=ORCLI CICD Build Client
+Description=ORCLI Client
 Documentation=https://orcli.odp.appveen.com
 After=network.target
 
