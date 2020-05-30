@@ -1,10 +1,16 @@
 {
-  "/api": {
+  "/orcli/api": {
     "target": "http://localhost:3001/",
-    "secure": false
+    "secure": false,
+    "pathRewrite": {
+      "^/orcli": ""
+    }
   },
-  "/socket": {
+  "/orcli/socket": {
     "target": "http://localhost:3001/",
-    "secure": false
+    "secure": false,
+    "pathRewrite": {
+      "^/orcli": ""
+    }
   }
 }
