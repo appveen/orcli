@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpRequest } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -47,6 +47,11 @@ export class ApiService {
     const self = this;
     const url = '/orcli/api' + environment.api[type] + path;
     return self.http.delete(url);
+  }
+
+  request(options: HttpRequest<any>) {
+    const self = this;
+    return self.http.request(options);
   }
 }
 

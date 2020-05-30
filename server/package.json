@@ -25,7 +25,8 @@
     "shelljs": "^0.8.3",
     "socket.io": "^2.3.0",
     "speakeasy": "^2.0.0",
-    "sqlite3": "^4.1.1"
+    "sqlite3": "^4.2.0",
+    "superagent": "^5.2.2"
   },
   "bin": "./index.js"
 }

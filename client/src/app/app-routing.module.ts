@@ -9,6 +9,7 @@ import { LoginGuard } from './guards/login.guard';
 import { AuthGuard } from './guards/auth.guard';
 import { BuildsComponent } from './dashboard/builds/builds.component';
 import { TasksComponent } from './dashboard/tasks/tasks.component';
+import { MachinesComponent } from './dashboard/machines/machines.component';
 
 
 const routes: Routes = [
@@ -21,7 +22,8 @@ const routes: Routes = [
       { path: 'tasks', component: TasksComponent },
       { path: 'hotfix', component: HotfixComponent },
       { path: 'release', component: ReleaseComponent },
-      { path: 'builds', component: BuildsComponent }
+      { path: 'builds', component: BuildsComponent },
+      { path: 'machines', component: MachinesComponent }
     ]
   }
 ];

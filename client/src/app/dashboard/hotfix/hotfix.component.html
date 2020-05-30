@@ -69,6 +69,14 @@
             ngbTooltip="This will upload the new base image to e-delivery">Release New Base Image</label>
         </div>
       </div>
+      <div *ngIf="form.get('deploy').value" class="form-group">
+        <label for="machine">Machine</label>
+        <select name="machine" id="machine" class="custom-select" formControlName="machine"
+          [ngClass]="{'is-invalid': form.get('machine').invalid}">
+          <option value="">---select---</option>
+          <option *ngFor="let item of machineList" [value]="item._id">{{item.name}}</option>
+        </select>
+      </div>
       <div *ngIf="form.get('upload').value" class="form-group">
         <label for="code">Release Authorization Code</label>
         <input type="text" class="form-control" name="code" formControlName="code"

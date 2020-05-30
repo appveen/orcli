@@ -16,6 +16,7 @@ export class HotfixComponent implements OnInit {
   repoList: Array<any>;
   triggerHotfixModalRef: NgbModalRef;
   selectedRepo: any;
+  machineList: Array<any>;
   constructor(
     private fb: FormBuilder,
     private api: ApiService,
@@ -24,6 +25,7 @@ export class HotfixComponent implements OnInit {
     private tooltipConfig: NgbTooltipConfig) {
     const self = this;
     self.repoList = [];
+    self.machineList = [];
     self.form = self.fb.group({
       repo: [null, [Validators.required]],
       branch: [null, [Validators.required, Validators.minLength(3)]],
@@ -31,7 +33,7 @@ export class HotfixComponent implements OnInit {
       cleanBuild: [true, [Validators.required]],
       deploy: [false, [Validators.required]],
       upload: [false, [Validators.required]],
-      baseImage: [false]
+      baseImage: [false],
     });
   }
 
@@ -39,15 +41,18 @@ export class HotfixComponent implements OnInit {
     const self = this;
     self.tooltipConfig.container = 'body';
     self.fetchRepoList();
+    self.fetchMachineList();
     self.form.get('repo').disable();
     self.form.get('deploy').valueChanges.subscribe(flag => {
       if (flag) {
         self.form.addControl('namespace', new FormControl(null, [Validators.required, Validators.minLength(3), Validators.maxLength(28)]));
+        self.form.addControl('machine', new FormControl('', [Validators.required]));
         self.form.get('upload').disable({
           emitEvent: false
         });
       } else {
         self.form.removeControl('namespace');
+        self.form.removeControl('machine');
         self.form.get('upload').enable({
           emitEvent: false
         });
@@ -72,6 +77,15 @@ export class HotfixComponent implements OnInit {
     const self = this;
     self.api.get('orcli', '/hotfix').subscribe((res: any) => {
       self.repoList = res;
+    }, err => {
+      self.toastr.error(err.error.message);
+    });
+  }
+
+  fetchMachineList() {
+    const self = this;
+    self.api.get('machines', '/', { count: -1, select: 'name,_id' }).subscribe((res: any) => {
+      self.machineList = res;
     }, err => {
       self.toastr.error(err.error.message);
     });

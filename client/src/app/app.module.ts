@@ -18,6 +18,8 @@ import { ReleaseComponent } from './dashboard/release/release.component';
 import { BuildsComponent } from './dashboard/builds/builds.component';
 import { TasksComponent } from './dashboard/tasks/tasks.component';
 import { SocketService } from './socket.service';
+import { MachinesComponent } from './dashboard/machines/machines.component';
+import { LogsComponent } from './dashboard/logs/logs.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { SocketService } from './socket.service';
     HomeComponent,
     ReleaseComponent,
     BuildsComponent,
-    TasksComponent
+    TasksComponent,
+    MachinesComponent,
+    LogsComponent
   ],
   imports: [
     BrowserModule,
