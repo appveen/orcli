@@ -7,6 +7,7 @@ export const environment = {
     hotfix: '/hotfix',
     user: '/user',
     builds: '/builds',
-    tasks: '/tasks'
+    tasks: '/tasks',
+    machines: '/machines'
   }
 };
