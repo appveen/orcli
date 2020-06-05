@@ -52,8 +52,8 @@ function reTagImage(repo, answers) {
         shell.rm('-rf', `${yamlPath}`);
         shell.cd(repo.name);
         shell.cp(`${repo.short.toLowerCase()}.yaml`, yamlPath);
-        shell.sed('-i', '__release_tag__', `'${ODP_RELEASE}'`, yamlPath);
-        shell.sed('-i', '__release__', `${ODP_RELEASE}-${TAG}`, yamlPath);
+        shell.sed('-i', '__release_tag__', `'${answers.release}'`, yamlPath);
+        shell.sed('-i', '__release__', `${TAG}`, yamlPath);
         shell.cd(answers.saveLocation);
         shell.exec(`docker tag ${oldTag} ${newTag}`)
             .exec(`docker save -o ${newTar} ${newTag}`)

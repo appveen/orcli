@@ -178,6 +178,7 @@ inquirer
                     answers.branch = 'release/' + answers.branch;
                 }
             }
+            answers.release = answers.branch.split('/').pop();
             answers.workspace = path.join(answers.workspace, answers.branch);
         }
         const date = new Date();
