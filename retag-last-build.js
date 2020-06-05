@@ -47,10 +47,25 @@ function reTagImage(repo, answers) {
         const oldTag = `odp:${repo.short.toLowerCase()}.${latest}`.trim('\n').trim(' ');
         const newTag = `odp:${repo.short.toLowerCase()}.${TAG}`.trim('\n').trim(' ');
         const newTar = `odp_${repo.short.toLowerCase()}.${TAG}.tar`.trim('\n').trim(' ');
+        const yamlFile = `${repo.short.toLowerCase()}.${TAG}.yaml`.trim('\n').trim(' ');
+        const yamlPath = path.join(answers.saveLocation, 'yamls', yamlFile);
+        shell.rm('-rf', `${yamlPath}`);
+        shell.cd(repo.name);
+        shell.cp(`${repo.short.toLowerCase()}.yaml`, yamlPath);
+        shell.sed('-i', '__release_tag__', `'${ODP_RELEASE}'`, yamlPath);
+        shell.sed('-i', '__release__', `${ODP_RELEASE}-${TAG}`, yamlPath);
         shell.cd(answers.saveLocation);
         shell.exec(`docker tag ${oldTag} ${newTag}`)
             .exec(`docker save -o ${newTar} ${newTag}`)
             .exec(`bzip2 ${newTar}`);
+        if(repo.short === 'SM'){
+            shell.exec(`docker save -o odp_base.${answers.release} odp:base.${answers.release}`)
+            .exec(`bzip2 odp_base.${answers.release}`);
+        }
+        if(repo.short === 'B2B'){
+            shell.exec(`docker save -o odp_base.${answers.release} odp:base.${answers.release}`)
+            .exec(`bzip2 odp_base.${answers.release}`);
+        }
     } else {
         console.log(chalk.red('***********************************'));
         console.log(chalk.red(`${LATEST_FILE} Not Found, Please build new Image`));
