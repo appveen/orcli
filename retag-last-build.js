@@ -63,8 +63,8 @@ function reTagImage(repo, answers) {
             .exec(`bzip2 odp_base.${answers.release}`);
         }
         if(repo.short === 'B2B'){
-            shell.exec(`docker save -o odp_base.${answers.release} odp:base.${answers.release}`)
-            .exec(`bzip2 odp_base.${answers.release}`);
+            shell.exec(`docker save -o odp_b2b.runner.${answers.release} odp:b2b.runner.${answers.release}`)
+            .exec(`bzip2 odp_b2b.runner.${answers.release}`);
         }
     } else {
         console.log(chalk.red('***********************************'));
