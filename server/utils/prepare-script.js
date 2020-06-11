@@ -161,12 +161,12 @@ function buildImage(repo, answers, script) {
     script.push(`\tif [ -f scripts/build_jar.sh ]; then`);
     script.push(`\t\tsh scripts/build_jar.sh`);
     script.push(`\tfi`);
-    script.push(`\tif [ -f scripts/setup.sh ]; then`);
-    script.push(`\t\tsh scripts/setup.sh`);
-    script.push(`\tfi`);
-    script.push(`\tif [ -f scripts/build_executables.sh ]; then`);
-    script.push(`\t\tsh scripts/build_executables.sh`);
-    script.push(`\tfi`);
+    // script.push(`\tif [ -f scripts/setup.sh ]; then`);
+    // script.push(`\t\tsh scripts/setup.sh`);
+    // script.push(`\tfi`);
+    // script.push(`\tif [ -f scripts/build_executables.sh ]; then`);
+    // script.push(`\t\tsh scripts/build_executables.sh`);
+    // script.push(`\tfi`);
     script.push(`fi`);
 }
 

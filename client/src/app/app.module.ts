@@ -19,7 +19,6 @@ import { BuildsComponent } from './dashboard/builds/builds.component';
 import { TasksComponent } from './dashboard/tasks/tasks.component';
 import { SocketService } from './socket.service';
 import { MachinesComponent } from './dashboard/machines/machines.component';
-import { LogsComponent } from './dashboard/logs/logs.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +31,6 @@ import { LogsComponent } from './dashboard/logs/logs.component';
     BuildsComponent,
     TasksComponent,
     MachinesComponent,
-    LogsComponent
   ],
   imports: [
     BrowserModule,
