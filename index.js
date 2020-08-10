@@ -220,11 +220,11 @@ inquirer
             console.log(chalk.cyan('***********************************'));
         } else if (answers.releaseType == 'Build All') {
             console.log(chalk.cyan('***********************************'));
-            console.log(chalk.green(`RE-TAGGING STARTED :: ${answers.tag}`));
+            console.log(chalk.green(`BUILD ALL STARTED :: ${answers.tag}`));
             console.log(chalk.cyan('***********************************'));
             buildAll.trigger(answers);
             console.log(chalk.cyan('***********************************'));
-            console.log(chalk.green(`RE-TAGGING ENDED :: ${answers.tag}`));
+            console.log(chalk.green(`BUILD ALL ENDED :: ${answers.tag}`));
             console.log(chalk.cyan('***********************************'));
         } else {
             console.log(chalk.cyan('***********************************'));
