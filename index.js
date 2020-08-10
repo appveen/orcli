@@ -12,6 +12,7 @@ const release = require('./release');
 const hotfix = require('./hotfix');
 const freshBuild = require('./fresh-build');
 const reTagLastBuild = require('./retag-last-build');
+const buildAll = require('./build-all');
 
 let defaultTag;
 
@@ -71,7 +72,8 @@ inquirer
                 'New Release',
                 'Fresh Build',
                 'Hotfix',
-                'Re-Tag Last Build'
+                'Re-Tag Last Build',
+                'Build All'
             ]
         },
         {
@@ -85,7 +87,8 @@ inquirer
             when: function (response) {
                 return response.releaseType === 'Hotfix'
                     || response.releaseType === 'Fresh Build'
-                    || response.releaseType === 'Re-Tag Last Build';
+                    || response.releaseType === 'Re-Tag Last Build'
+                    || response.releaseType === 'Build All';
             },
             type: 'input',
             name: 'branch',
@@ -104,7 +107,9 @@ inquirer
         },
         {
             when: function (response) {
-                return response.releaseType === 'Hotfix' || response.releaseType === 'Fresh Build';
+                return response.releaseType === 'Hotfix'
+                    || response.releaseType === 'Fresh Build'
+                    || response.releaseType === 'Build All';
             },
             type: 'confirm',
             name: 'cleanBuild',
@@ -122,7 +127,8 @@ inquirer
             when: function (response) {
                 defaultTag = response.branch;
                 return response.releaseType === 'Fresh Build'
-                    || response.releaseType === 'Re-Tag Last Build';
+                    || response.releaseType === 'Re-Tag Last Build'
+                    || response.releaseType === 'Build All';
             },
             type: 'input',
             name: 'tag',
@@ -131,7 +137,8 @@ inquirer
         },
         {
             when: function (response) {
-                return response.releaseType === 'Hotfix';
+                return response.releaseType === 'Hotfix'
+                    || response.releaseType === 'Build All';
             },
             type: 'confirm',
             name: 'deploy',
@@ -208,6 +215,14 @@ inquirer
             console.log(chalk.green(`RE-TAGGING STARTED :: ${answers.tag}`));
             console.log(chalk.cyan('***********************************'));
             reTagLastBuild.trigger(answers);
+            console.log(chalk.cyan('***********************************'));
+            console.log(chalk.green(`RE-TAGGING ENDED :: ${answers.tag}`));
+            console.log(chalk.cyan('***********************************'));
+        } else if (answers.releaseType == 'Build All') {
+            console.log(chalk.cyan('***********************************'));
+            console.log(chalk.green(`RE-TAGGING STARTED :: ${answers.tag}`));
+            console.log(chalk.cyan('***********************************'));
+            buildAll.trigger(answers);
             console.log(chalk.cyan('***********************************'));
             console.log(chalk.green(`RE-TAGGING ENDED :: ${answers.tag}`));
             console.log(chalk.cyan('***********************************'));
