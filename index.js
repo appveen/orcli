@@ -181,7 +181,10 @@ inquirer
             answers.workspace = path.join(answers.workspace, answers.release);
         } else {
             if (answers.branch && answers.branch.split('/').length == 1) {
-                if (answers.branch !== 'dev' && answers.branch !== 'perf') {
+                if (answers.branch !== 'dev'
+                    && answers.branch !== 'perf'
+                    && answers.branch !== 'data.stack'
+                    && answers.branch !== 'data-stack') {
                     answers.branch = 'release/' + answers.branch;
                 }
             }
