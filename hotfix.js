@@ -115,11 +115,13 @@ function buildImage(repo, answers) {
         shell.cd(answers.saveLocation);
         if (repo.short) {
             const imageName = `odp:${repo.short.toLowerCase()}.${ODP_RELEASE}-${TAG}`;
-            const tarName = `odp_${repo.short.toLowerCase()}.${ODP_RELEASE}-${TAG}.tar`;
-            shell.rm('-rf', `${tarName}`);
-            shell.rm('-rf', `${tarName}.bz2`);
-            shell.exec(`docker save -o ${tarName} ${imageName}`)
-                .exec(`bzip2 ${tarName}`);
+            if (!answers.deploy) {
+                const tarName = `odp_${repo.short.toLowerCase()}.${ODP_RELEASE}-${TAG}.tar`;
+                shell.rm('-rf', `${tarName}`);
+                shell.rm('-rf', `${tarName}.bz2`);
+                shell.exec(`docker save -o ${tarName} ${imageName}`)
+                    .exec(`bzip2 ${tarName}`);
+            }
             if (answers.namespace && answers.deploy && repo.short && repo.short !== 'AUTHOR' && repo.short !== 'APPCENTER' && repo.short !== 'SWAGGER') {
                 shell.exec(`kubectl set image deployment/${repo.short.toLowerCase()} ${repo.short.toLowerCase()}=${imageName} -n ${answers.namespace} --record=true`);
             }
