@@ -41,7 +41,11 @@ const repoFileLocation = path.join(__dirname, 'repo-list.json');
 const configFileLocation = path.join(__dirname, 'config.json');
 
 if (!fs.existsSync(configFileLocation)) {
-    fs.writeFileSync(configFileLocation, '{"repoAccess":{ "username":"", "password":""},"workspace":""}', 'utf8');
+    fs.writeFileSync(configFileLocation, JSON.stringify({
+        "repoAccess": { "username": "", "password": "" },
+        "workspace": `${path.join(os.homedir(), 'orcli_workspace')}`,
+        "skipBranch": ["perf", "data.stack", "data-stack", "dedupe"]
+    }), 'utf8');
 }
 
 /**
@@ -49,6 +53,9 @@ if (!fs.existsSync(configFileLocation)) {
  */
 const repoList = jsonfile.readFileSync(repoFileLocation);
 const config = jsonfile.readFileSync(configFileLocation);
+if (!config.skipBranch) {
+    config.skipBranch = ["perf", "data.stack", "data-stack", "dedupe"];
+}
 const defaultWorkspace = config.workspace || path.join(os.homedir(), 'orcli_workspace');
 
 
@@ -58,12 +65,12 @@ console.log(chalk.cyan('***********************************'));
 console.log('');
 inquirer
     .prompt([
-        {
-            type: 'input',
-            name: 'workspace',
-            message: 'Please enter workspace location',
-            default: defaultWorkspace
-        },
+        // {
+        //     type: 'input',
+        //     name: 'workspace',
+        //     message: 'Please enter workspace location',
+        //     default: defaultWorkspace
+        // },
         {
             type: 'list',
             name: 'releaseType',
@@ -174,6 +181,7 @@ inquirer
         // }
     ])
     .then(answers => {
+        answers.workspace = defaultWorkspace;
         config.workspace = answers.workspace;
         jsonfile.writeFileSync(configFileLocation, config);
         answers.workspace = path.join(__dirname, path.relative(__dirname, answers.workspace));
@@ -182,9 +190,7 @@ inquirer
         } else {
             if (answers.branch && answers.branch.split('/').length == 1) {
                 if (answers.branch !== 'dev'
-                    && answers.branch !== 'perf'
-                    && answers.branch !== 'data.stack'
-                    && answers.branch !== 'data-stack') {
+                    && config.skipBranch.indexOf(answers.branch) == -1) {
                     answers.branch = 'release/' + answers.branch;
                 }
             }
