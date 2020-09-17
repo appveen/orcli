@@ -47,7 +47,7 @@
         "name": "odp-dedupe",
         "url": "git@bitbucket.org:appveen/odp-dedupe.git",
         "node": true,
-        "short":"DEU"
+        "short":"DE"
     },
     {
         "name": "odp-gateway",
