@@ -69,7 +69,7 @@ function buildImage(repo, answers) {
         shell.touch(`CLEAN_BUILD_${repo.short}`)
     }
     if (!TAG) {
-        if (answers.deploy) {
+        if (answers.deploy && repo.short !== 'AUTHOR' && repo.short !== 'APPCENTER' && repo.short !== 'SWAGGER') {
             TAG = `hotfix-${answers.hotfix}_` + Date.now();
         } else {
             TAG = `hotfix-${answers.hotfix}`;
