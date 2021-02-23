@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./head'); %>
+</head>
+
+<body>
+    <form action="<%=locals.basePath%>login" method="POST" enctype="application/json">
+        <table>
+            <tr>
+                <th><label for="username">Username</label></th>
+                <td>
+                    <input type="text" name="username" id="username">
+                </td>
+            </tr>
+            <tr>
+                <th><label for="password">Password</label></th>
+                <td>
+                    <input type="password" name="password" id="password">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="color: red;">
+                    <%=locals.message%>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <button type="submit">Login</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</body>
+
+</html>

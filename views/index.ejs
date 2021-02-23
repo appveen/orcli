@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./head'); %>
+</head>
+
+<body>
+    <%- include('./header'); %>
+    <form enctype="application/json" action="<%=locals.basePath%>script" method="POST">
+        <table>
+            <tr>
+                <th>Build Script</th>
+                <th>Previous Builds</th>
+            </tr>
+            <tr>
+                <td>
+                    <textarea style="height: 100%;" name="script" id="script" cols="100"
+                        rows="50"><%=locals.script%></textarea>
+                </td>
+                <td>
+                    <ul>
+                        <li><a href="#">One</a></li>
+                        <li><a href="#">One</a></li>
+                        <li><a href="#">One</a></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="submit">Update</button>
+                </td>
+                <td>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <script>
+        var bindings = {
+            "Cmd-Left": "goLineStartSmart",
+            "Shift-Tab": "indentLess",
+            "Shift-Ctrl-K": "deleteLine",
+            "Alt-Q": "wrapLines",
+            "Ctrl-Left": "goSubwordLeft",
+            "Ctrl-Right": "goSubwordRight",
+            "Ctrl-Alt-Up": "scrollLineUp",
+            "Ctrl-Alt-Down": "scrollLineDown",
+            "Cmd-L": "selectLine",
+            "Shift-Cmd-L": "splitSelectionByLine",
+            "Esc": "singleSelectionTop",
+            "Cmd-Enter": "insertLineAfter",
+            "Shift-Cmd-Enter": "insertLineBefore",
+            "Cmd-D": "selectNextOccurrence",
+            "Shift-Cmd-Space": "selectScope",
+            "Shift-Cmd-M": "selectBetweenBrackets",
+            "Cmd-M": "goToBracket",
+            "Cmd-Ctrl-Up": "swapLineUp",
+            "Cmd-Ctrl-Down": "swapLineDown",
+            "Cmd-/": "toggleCommentIndented",
+            "Cmd-J": "joinLines",
+            "Shift-Cmd-D": "duplicateLine",
+            "F5": "sortLines",
+            "Cmd-F5": "sortLinesInsensitive",
+            "F2": "nextBookmark",
+            "Shift-F2": "prevBookmark",
+            "Cmd-F2": "toggleBookmark",
+            "Shift-Cmd-F2": "clearBookmarks",
+            "Alt-F2": "selectBookmarks",
+            "Backspace": "smartBackspace",
+            "Cmd-K Cmd-D": "skipAndSelectNextOccurrence",
+            "Cmd-K Cmd-K": "delLineRight",
+            "Cmd-K Cmd-U": "upcaseAtCursor",
+            "Cmd-K Cmd-L": "downcaseAtCursor",
+            "Cmd-K Cmd-Space": "setSublimeMark",
+            "Cmd-K Cmd-A": "selectToSublimeMark",
+            "Cmd-K Cmd-W": "deleteToSublimeMark",
+            "Cmd-K Cmd-X": "swapWithSublimeMark",
+            "Cmd-K Cmd-Y": "sublimeYank",
+            "Cmd-K Cmd-C": "showInCenter",
+            "Cmd-K Cmd-G": "clearBookmarks",
+            "Cmd-K Cmd-Backspace": "delLineLeft",
+            "Cmd-K Cmd-1": "foldAll",
+            "Cmd-K Cmd-0": "unfoldAll",
+            "Cmd-K Cmd-J": "unfoldAll",
+            "Shift-Ctrl-Up": "addCursorToPrevLine",
+            "Shift-Ctrl-Down": "addCursorToNextLine",
+            "Cmd-F3": "findUnder",
+            "Shift-Cmd-F3": "findUnderPrevious",
+            "Shift-Cmd-[": "fold",
+            "Shift-Cmd-]": "unfold",
+            "Cmd-H": "replace",
+        }
+
+        // The implementation of joinLines
+        function joinLines(cm) {
+            var ranges = cm.listSelections(), joined = [];
+            for (var i = 0; i < ranges.length; i++) {
+                var range = ranges[i], from = range.from();
+                var start = from.line, end = range.to().line;
+                while (i < ranges.length - 1 && ranges[i + 1].from().line == end)
+                    end = ranges[++i].to().line;
+                joined.push({ start: start, end: end, anchor: !range.empty() && from });
+            }
+            cm.operation(function () {
+                var offset = 0, ranges = [];
+                for (var i = 0; i < joined.length; i++) {
+                    var obj = joined[i];
+                    var anchor = obj.anchor && Pos(obj.anchor.line - offset, obj.anchor.ch), head;
+                    for (var line = obj.start; line <= obj.end; line++) {
+                        var actual = line - offset;
+                        if (line == obj.end) head = Pos(actual, cm.getLine(actual).length + 1);
+                        if (actual < cm.lastLine()) {
+                            cm.replaceRange(" ", Pos(actual), Pos(actual + 1, /^\s*/.exec(cm.getLine(actual + 1))[0].length));
+                            ++offset;
+                        }
+                    }
+                    ranges.push({ anchor: anchor || head, head: head });
+                }
+                cm.setSelections(ranges, 0);
+            });
+        }
+        var myTextarea = document.getElementById('script');
+        var editor = CodeMirror.fromTextArea(myTextarea, {
+            lineNumbers: true,
+            keyMap: 'sublime',
+            mode: "text/x-sh",
+            theme: 'material'
+        });
+    </script>
+</body>
+
+</html>

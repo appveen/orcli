@@ -42,5 +42,32 @@ function executeSync(command) {
     return execSync(command);
 }
 
+/**
+ * 
+ * @param {string} path 
+ */
+function mkdir(path) {
+    return execSync(`mkdir -p ${path}`);
+}
+
+/**
+ * 
+ * @param {string} path 
+ */
+function cd(path) {
+    return process.chdir(path);
+}
+
+/**
+ * 
+ * @param {string} command 
+ */
+function rm(command) {
+    return execSync(`rm -rf ${command}`, { cwd: process.cwd() });
+}
+
 module.exports.execute = execute;
 module.exports.executeSync = executeSync;
+module.exports.mkdir = mkdir;
+module.exports.cd = cd;
+module.exports.rm = rm;
